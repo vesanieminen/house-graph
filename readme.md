@@ -1,3 +1,8 @@
+# House Graph
+
+
+![House Graph](https://scontent.xx.fbcdn.net/t31.0-8/14524627_10154241529543241_1587567175913965170_o.jpg)
+
 To run the application do the following:
  * Install Node and npm.
  * 'npm install'
