@@ -19,7 +19,7 @@ var Home = React.createClass({
             data: HouseApi.getHouseData(),
             descriptors: HouseApi.getDescriptors(),
             divisors: HouseApi.getDivisors(),
-            ids: ["bt1", "bt20", "bt22"]
+            ids: ["bt1", "bt20", "bt21", "bt22", "bt1_avg"]
         };
     },
     onChange: function(e) {
@@ -49,21 +49,6 @@ var Home = React.createClass({
                     divisors={this.state.divisors}
                     ids={this.state.ids}
                 />
-                <select multiple={true} onChange={this.onChange} value={this.state.ids}>
-                    <option value="bt1">Outdoor Temperature</option>
-                    <option value="bt2">Heating Medium Flow</option>
-                    <option value="bt3">Heating Medium Return</option>
-                    <option value="bt6">Hot Water Charging</option>
-                    <option value="bt7">Hot Water Top</option>
-                    <option value="bt16">Evaporator</option>
-                    <option value="bt18">Compression Operation</option>
-                    <option value="bt19">Immersion Heater Operation</option>
-                    <option value="bt20">Exhaust Air</option>
-                    <option value="bt21">Extract Air</option>
-                    <option value="bt22">Supply Air</option>
-                    <option value="calc_supply">Calculated Flow Temp</option>
-                    <option value="bt1_avg">Avg. Outdoor Temp</option>
-                </select>
             </div>
         );
     }
@@ -75,5 +60,22 @@ var Home = React.createClass({
 //{items.map(function(item) {
 //    <Options opt={item} description={item} />
 //})}
+//
+//
+//                <select multiple={true} onChange={this.onChange} value={this.state.ids}>
+//                    <option value="bt1">Outdoor Temperature</option>
+//                    <option value="bt2">Heating Medium Flow</option>
+//                    <option value="bt3">Heating Medium Return</option>
+//                    <option value="bt6">Hot Water Charging</option>
+//                    <option value="bt7">Hot Water Top</option>
+//                    <option value="bt16">Evaporator</option>
+//                    <option value="bt18">Compression Operation</option>
+//                    <option value="bt19">Immersion Heater Operation</option>
+//                    <option value="bt20">Exhaust Air</option>
+//                    <option value="bt21">Extract Air</option>
+//                    <option value="bt22">Supply Air</option>
+//                    <option value="calc_supply">Calculated Flow Temp</option>
+//                    <option value="bt1_avg">Avg. Outdoor Temp</option>
+//                </select>
 
 module.exports = Home;
