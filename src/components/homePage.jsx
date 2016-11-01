@@ -19,7 +19,7 @@ var Home = React.createClass({
             data: HouseApi.getHouseData(),
             descriptors: HouseApi.getDescriptors(),
             divisors: HouseApi.getDivisors(),
-            ids: ["bt1", "bt20", "bt21", "bt22", "bt1_avg"]
+            ids: ["bt1", "bt20", "bt21", "bt22"]
         };
     },
     onChange: function(e) {

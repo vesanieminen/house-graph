@@ -36,9 +36,9 @@ var House = React.createClass({
             <div style={{height: "600px"}}>
 				<vaadin-line-chart>
                     <exporting enabled="false" />
-                    <chart-title>30 - 31.10.2016</chart-title>
+                    <chart-title>31.10.2016 - 1.11.2016</chart-title>
 				  <x-axis type="datetime"><title>Time</title></x-axis>
-				  <y-axis><title>Temperature (°C)</title><min>-5</min><max>20</max></y-axis>
+				  <y-axis><title>Temperature (°C)</title></y-axis>
 						{this.props.ids.map(this.getDataSeries)}
 				  <plot-options>
 					<line>

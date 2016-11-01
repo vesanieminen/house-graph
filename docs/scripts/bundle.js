@@ -12504,7 +12504,7 @@ return jQuery;
 /**
  * @license
  * lodash <https://lodash.com/>
- * Copyright JS Foundation and other contributors <https://js.foundation/>
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -12515,7 +12515,7 @@ return jQuery;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.16.5';
+  var VERSION = '4.16.2';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -12554,7 +12554,7 @@ return jQuery;
       DEFAULT_TRUNC_OMISSION = '...';
 
   /** Used to detect hot functions by number of calls within a span of milliseconds. */
-  var HOT_COUNT = 800,
+  var HOT_COUNT = 500,
       HOT_SPAN = 16;
 
   /** Used to indicate the type of lazy iteratees. */
@@ -12589,24 +12589,19 @@ return jQuery;
   /** `Object#toString` result references. */
   var argsTag = '[object Arguments]',
       arrayTag = '[object Array]',
-      asyncTag = '[object AsyncFunction]',
       boolTag = '[object Boolean]',
       dateTag = '[object Date]',
-      domExcTag = '[object DOMException]',
       errorTag = '[object Error]',
       funcTag = '[object Function]',
       genTag = '[object GeneratorFunction]',
       mapTag = '[object Map]',
       numberTag = '[object Number]',
-      nullTag = '[object Null]',
       objectTag = '[object Object]',
       promiseTag = '[object Promise]',
-      proxyTag = '[object Proxy]',
       regexpTag = '[object RegExp]',
       setTag = '[object Set]',
       stringTag = '[object String]',
       symbolTag = '[object Symbol]',
-      undefinedTag = '[object Undefined]',
       weakMapTag = '[object WeakMap]',
       weakSetTag = '[object WeakSet]';
 
@@ -12732,15 +12727,13 @@ return jQuery;
       rsZWJ = '\\u200d';
 
   /** Used to compose unicode regexes. */
-  var rsMiscLower = '(?:' + rsLower + '|' + rsMisc + ')',
-      rsMiscUpper = '(?:' + rsUpper + '|' + rsMisc + ')',
-      rsOptContrLower = '(?:' + rsApos + '(?:d|ll|m|re|s|t|ve))?',
-      rsOptContrUpper = '(?:' + rsApos + '(?:D|LL|M|RE|S|T|VE))?',
+  var rsLowerMisc = '(?:' + rsLower + '|' + rsMisc + ')',
+      rsUpperMisc = '(?:' + rsUpper + '|' + rsMisc + ')',
+      rsOptLowerContr = '(?:' + rsApos + '(?:d|ll|m|re|s|t|ve))?',
+      rsOptUpperContr = '(?:' + rsApos + '(?:D|LL|M|RE|S|T|VE))?',
       reOptMod = rsModifier + '?',
       rsOptVar = '[' + rsVarRange + ']?',
       rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
-      rsOrdLower = '\\d*(?:(?:1st|2nd|3rd|(?![123])\\dth)\\b)',
-      rsOrdUpper = '\\d*(?:(?:1ST|2ND|3RD|(?![123])\\dTH)\\b)',
       rsSeq = rsOptVar + reOptMod + rsOptJoin,
       rsEmoji = '(?:' + [rsDingbat, rsRegional, rsSurrPair].join('|') + ')' + rsSeq,
       rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
@@ -12759,12 +12752,10 @@ return jQuery;
 
   /** Used to match complex or compound words. */
   var reUnicodeWord = RegExp([
-    rsUpper + '?' + rsLower + '+' + rsOptContrLower + '(?=' + [rsBreak, rsUpper, '$'].join('|') + ')',
-    rsMiscUpper + '+' + rsOptContrUpper + '(?=' + [rsBreak, rsUpper + rsMiscLower, '$'].join('|') + ')',
-    rsUpper + '?' + rsMiscLower + '+' + rsOptContrLower,
-    rsUpper + '+' + rsOptContrUpper,
-    rsOrdUpper,
-    rsOrdLower,
+    rsUpper + '?' + rsLower + '+' + rsOptLowerContr + '(?=' + [rsBreak, rsUpper, '$'].join('|') + ')',
+    rsUpperMisc + '+' + rsOptUpperContr + '(?=' + [rsBreak, rsUpper + rsLowerMisc, '$'].join('|') + ')',
+    rsUpper + '?' + rsLowerMisc + '+' + rsOptLowerContr,
+    rsUpper + '+' + rsOptUpperContr,
     rsDigits,
     rsEmoji
   ].join('|'), 'g');
@@ -13007,7 +12998,7 @@ return jQuery;
    */
   function arrayAggregator(array, setter, iteratee, accumulator) {
     var index = -1,
-        length = array == null ? 0 : array.length;
+        length = array ? array.length : 0;
 
     while (++index < length) {
       var value = array[index];
@@ -13027,7 +13018,7 @@ return jQuery;
    */
   function arrayEach(array, iteratee) {
     var index = -1,
-        length = array == null ? 0 : array.length;
+        length = array ? array.length : 0;
 
     while (++index < length) {
       if (iteratee(array[index], index, array) === false) {
@@ -13047,7 +13038,7 @@ return jQuery;
    * @returns {Array} Returns `array`.
    */
   function arrayEachRight(array, iteratee) {
-    var length = array == null ? 0 : array.length;
+    var length = array ? array.length : 0;
 
     while (length--) {
       if (iteratee(array[length], length, array) === false) {
@@ -13069,7 +13060,7 @@ return jQuery;
    */
   function arrayEvery(array, predicate) {
     var index = -1,
-        length = array == null ? 0 : array.length;
+        length = array ? array.length : 0;
 
     while (++index < length) {
       if (!predicate(array[index], index, array)) {
@@ -13090,7 +13081,7 @@ return jQuery;
    */
   function arrayFilter(array, predicate) {
     var index = -1,
-        length = array == null ? 0 : array.length,
+        length = array ? array.length : 0,
         resIndex = 0,
         result = [];
 
@@ -13113,7 +13104,7 @@ return jQuery;
    * @returns {boolean} Returns `true` if `target` is found, else `false`.
    */
   function arrayIncludes(array, value) {
-    var length = array == null ? 0 : array.length;
+    var length = array ? array.length : 0;
     return !!length && baseIndexOf(array, value, 0) > -1;
   }
 
@@ -13128,7 +13119,7 @@ return jQuery;
    */
   function arrayIncludesWith(array, value, comparator) {
     var index = -1,
-        length = array == null ? 0 : array.length;
+        length = array ? array.length : 0;
 
     while (++index < length) {
       if (comparator(value, array[index])) {
@@ -13149,7 +13140,7 @@ return jQuery;
    */
   function arrayMap(array, iteratee) {
     var index = -1,
-        length = array == null ? 0 : array.length,
+        length = array ? array.length : 0,
         result = Array(length);
 
     while (++index < length) {
@@ -13191,7 +13182,7 @@ return jQuery;
    */
   function arrayReduce(array, iteratee, accumulator, initAccum) {
     var index = -1,
-        length = array == null ? 0 : array.length;
+        length = array ? array.length : 0;
 
     if (initAccum && length) {
       accumulator = array[++index];
@@ -13215,7 +13206,7 @@ return jQuery;
    * @returns {*} Returns the accumulated value.
    */
   function arrayReduceRight(array, iteratee, accumulator, initAccum) {
-    var length = array == null ? 0 : array.length;
+    var length = array ? array.length : 0;
     if (initAccum && length) {
       accumulator = array[--length];
     }
@@ -13237,7 +13228,7 @@ return jQuery;
    */
   function arraySome(array, predicate) {
     var index = -1,
-        length = array == null ? 0 : array.length;
+        length = array ? array.length : 0;
 
     while (++index < length) {
       if (predicate(array[index], index, array)) {
@@ -13381,7 +13372,7 @@ return jQuery;
    * @returns {number} Returns the mean.
    */
   function baseMean(array, iteratee) {
-    var length = array == null ? 0 : array.length;
+    var length = array ? array.length : 0;
     return length ? (baseSum(array, iteratee) / length) : NAN;
   }
 
@@ -13921,7 +13912,7 @@ return jQuery;
    * var defer = _.runInContext({ 'setTimeout': setImmediate }).defer;
    */
   var runInContext = (function runInContext(context) {
-    context = context == null ? root : _.defaults(root.Object(), context, _.pick(root, contextProps));
+    context = context ? _.defaults(root.Object(), context, _.pick(root, contextProps)) : root;
 
     /** Built-in constructor references. */
     var Array = context.Array,
@@ -13942,6 +13933,12 @@ return jQuery;
     /** Used to detect overreaching core-js shims. */
     var coreJsData = context['__core-js_shared__'];
 
+    /** Used to detect methods masquerading as native. */
+    var maskSrcKey = (function() {
+      var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+      return uid ? ('Symbol(src)_1.' + uid) : '';
+    }());
+
     /** Used to resolve the decompiled source of functions. */
     var funcToString = funcProto.toString;
 
@@ -13951,21 +13948,15 @@ return jQuery;
     /** Used to generate unique IDs. */
     var idCounter = 0;
 
-    /** Used to detect methods masquerading as native. */
-    var maskSrcKey = (function() {
-      var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-      return uid ? ('Symbol(src)_1.' + uid) : '';
-    }());
+    /** Used to infer the `Object` constructor. */
+    var objectCtorString = funcToString.call(Object);
 
     /**
      * Used to resolve the
      * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
      * of values.
      */
-    var nativeObjectToString = objectProto.toString;
-
-    /** Used to infer the `Object` constructor. */
-    var objectCtorString = funcToString.call(Object);
+    var objectToString = objectProto.toString;
 
     /** Used to restore the original `_` reference in `_.noConflict`. */
     var oldDash = root._;
@@ -13981,21 +13972,13 @@ return jQuery;
         Symbol = context.Symbol,
         Uint8Array = context.Uint8Array,
         allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined,
+        defineProperty = Object.defineProperty,
         getPrototype = overArg(Object.getPrototypeOf, Object),
+        iteratorSymbol = Symbol ? Symbol.iterator : undefined,
         objectCreate = Object.create,
         propertyIsEnumerable = objectProto.propertyIsEnumerable,
         splice = arrayProto.splice,
-        spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined,
-        symIterator = Symbol ? Symbol.iterator : undefined,
-        symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-    var defineProperty = (function() {
-      try {
-        var func = getNative(Object, 'defineProperty');
-        func({}, '', {});
-        return func;
-      } catch (e) {}
-    }());
+        spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
 
     /** Mocked built-ins. */
     var ctxClearTimeout = context.clearTimeout !== root.clearTimeout && context.clearTimeout,
@@ -14023,7 +14006,8 @@ return jQuery;
         Promise = getNative(context, 'Promise'),
         Set = getNative(context, 'Set'),
         WeakMap = getNative(context, 'WeakMap'),
-        nativeCreate = getNative(Object, 'create');
+        nativeCreate = getNative(Object, 'create'),
+        nativeDefineProperty = getNative(Object, 'defineProperty');
 
     /** Used to store function metadata. */
     var metaMap = WeakMap && new WeakMap;
@@ -14191,7 +14175,7 @@ return jQuery;
         if (objectCreate) {
           return objectCreate(proto);
         }
-        object.prototype = proto;
+        object.prototype = prototype;
         var result = new object;
         object.prototype = undefined;
         return result;
@@ -14421,7 +14405,7 @@ return jQuery;
      */
     function Hash(entries) {
       var index = -1,
-          length = entries == null ? 0 : entries.length;
+          length = entries ? entries.length : 0;
 
       this.clear();
       while (++index < length) {
@@ -14525,7 +14509,7 @@ return jQuery;
      */
     function ListCache(entries) {
       var index = -1,
-          length = entries == null ? 0 : entries.length;
+          length = entries ? entries.length : 0;
 
       this.clear();
       while (++index < length) {
@@ -14642,7 +14626,7 @@ return jQuery;
      */
     function MapCache(entries) {
       var index = -1,
-          length = entries == null ? 0 : entries.length;
+          length = entries ? entries.length : 0;
 
       this.clear();
       while (++index < length) {
@@ -14746,7 +14730,7 @@ return jQuery;
      */
     function SetCache(values) {
       var index = -1,
-          length = values == null ? 0 : values.length;
+          length = values ? values.length : 0;
 
       this.__data__ = new MapCache;
       while (++index < length) {
@@ -14899,26 +14883,18 @@ return jQuery;
      * @returns {Array} Returns the array of property names.
      */
     function arrayLikeKeys(value, inherited) {
-      var isArr = isArray(value),
-          isArg = !isArr && isArguments(value),
-          isBuff = !isArr && !isArg && isBuffer(value),
-          isType = !isArr && !isArg && !isBuff && isTypedArray(value),
-          skipIndexes = isArr || isArg || isBuff || isType,
-          result = skipIndexes ? baseTimes(value.length, String) : [],
-          length = result.length;
+      // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+      // Safari 9 makes `arguments.length` enumerable in strict mode.
+      var result = (isArray(value) || isArguments(value))
+        ? baseTimes(value.length, String)
+        : [];
+
+      var length = result.length,
+          skipIndexes = !!length;
 
       for (var key in value) {
         if ((inherited || hasOwnProperty.call(value, key)) &&
-            !(skipIndexes && (
-               // Safari 9 has enumerable `arguments.length` in strict mode.
-               key == 'length' ||
-               // Node.js 0.10 has enumerable non-index properties on buffers.
-               (isBuff && (key == 'offset' || key == 'parent')) ||
-               // PhantomJS 2 has enumerable non-index properties on typed arrays.
-               (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-               // Skip index properties.
-               isIndex(key, length)
-            ))) {
+            !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
           result.push(key);
         }
       }
@@ -14946,7 +14922,7 @@ return jQuery;
      * @returns {Array} Returns the random elements.
      */
     function arraySampleSize(array, n) {
-      return shuffleSelf(copyArray(array), baseClamp(n, 0, array.length));
+      return shuffleSelf(copyArray(array), n);
     }
 
     /**
@@ -14989,7 +14965,7 @@ return jQuery;
      */
     function assignMergeValue(object, key, value) {
       if ((value !== undefined && !eq(object[key], value)) ||
-          (value === undefined && !(key in object))) {
+          (typeof key == 'number' && value === undefined && !(key in object))) {
         baseAssignValue(object, key, value);
       }
     }
@@ -15093,12 +15069,12 @@ return jQuery;
      */
     function baseAt(object, paths) {
       var index = -1,
+          isNil = object == null,
           length = paths.length,
-          result = Array(length),
-          skip = object == null;
+          result = Array(length);
 
       while (++index < length) {
-        result[index] = skip ? undefined : get(object, paths[index]);
+        result[index] = isNil ? undefined : get(object, paths[index]);
       }
       return result;
     }
@@ -15182,7 +15158,9 @@ return jQuery;
       }
       stack.set(value, result);
 
-      var props = isArr ? undefined : (isFull ? getAllKeys : keys)(value);
+      if (!isArr) {
+        var props = isFull ? getAllKeys(value) : keys(value);
+      }
       arrayEach(props || value, function(subValue, key) {
         if (props) {
           key = subValue;
@@ -15288,7 +15266,7 @@ return jQuery;
       outer:
       while (++index < length) {
         var value = array[index],
-            computed = iteratee == null ? value : iteratee(value);
+            computed = iteratee ? iteratee(value) : value;
 
         value = (comparator || value !== 0) ? value : 0;
         if (isCommon && computed === computed) {
@@ -15555,20 +15533,14 @@ return jQuery;
     }
 
     /**
-     * The base implementation of `getTag` without fallbacks for buggy environments.
+     * The base implementation of `getTag`.
      *
      * @private
      * @param {*} value The value to query.
      * @returns {string} Returns the `toStringTag`.
      */
     function baseGetTag(value) {
-      if (value == null) {
-        return value === undefined ? undefinedTag : nullTag;
-      }
-      value = Object(value);
-      return (symToStringTag && symToStringTag in value)
-        ? getRawTag(value)
-        : objectToString(value);
+      return objectToString.call(value);
     }
 
     /**
@@ -15723,17 +15695,6 @@ return jQuery;
     }
 
     /**
-     * The base implementation of `_.isArguments`.
-     *
-     * @private
-     * @param {*} value The value to check.
-     * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-     */
-    function baseIsArguments(value) {
-      return isObjectLike(value) && baseGetTag(value) == argsTag;
-    }
-
-    /**
      * The base implementation of `_.isArrayBuffer` without Node.js optimizations.
      *
      * @private
@@ -15741,7 +15702,7 @@ return jQuery;
      * @returns {boolean} Returns `true` if `value` is an array buffer, else `false`.
      */
     function baseIsArrayBuffer(value) {
-      return isObjectLike(value) && baseGetTag(value) == arrayBufferTag;
+      return isObjectLike(value) && objectToString.call(value) == arrayBufferTag;
     }
 
     /**
@@ -15752,7 +15713,7 @@ return jQuery;
      * @returns {boolean} Returns `true` if `value` is a date object, else `false`.
      */
     function baseIsDate(value) {
-      return isObjectLike(value) && baseGetTag(value) == dateTag;
+      return isObjectLike(value) && objectToString.call(value) == dateTag;
     }
 
     /**
@@ -15813,13 +15774,6 @@ return jQuery;
           othIsObj = othTag == objectTag,
           isSameTag = objTag == othTag;
 
-      if (isSameTag && isBuffer(object)) {
-        if (!isBuffer(other)) {
-          return false;
-        }
-        objIsArr = true;
-        objIsObj = false;
-      }
       if (isSameTag && !objIsObj) {
         stack || (stack = new Stack);
         return (objIsArr || isTypedArray(object))
@@ -15934,7 +15888,7 @@ return jQuery;
      * @returns {boolean} Returns `true` if `value` is a regexp, else `false`.
      */
     function baseIsRegExp(value) {
-      return isObjectLike(value) && baseGetTag(value) == regexpTag;
+      return isObject(value) && objectToString.call(value) == regexpTag;
     }
 
     /**
@@ -15957,7 +15911,7 @@ return jQuery;
      */
     function baseIsTypedArray(value) {
       return isObjectLike(value) &&
-        isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+        isLength(value.length) && !!typedArrayTags[objectToString.call(value)];
     }
 
     /**
@@ -16109,7 +16063,14 @@ return jQuery;
       if (object === source) {
         return;
       }
-      baseFor(source, function(srcValue, key) {
+      if (!(isArray(source) || isTypedArray(source))) {
+        var props = baseKeysIn(source);
+      }
+      arrayEach(props || source, function(srcValue, key) {
+        if (props) {
+          key = srcValue;
+          srcValue = source[key];
+        }
         if (isObject(srcValue)) {
           stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
@@ -16124,7 +16085,7 @@ return jQuery;
           }
           assignMergeValue(object, key, newValue);
         }
-      }, keysIn);
+      });
     }
 
     /**
@@ -16158,37 +16119,29 @@ return jQuery;
       var isCommon = newValue === undefined;
 
       if (isCommon) {
-        var isArr = isArray(srcValue),
-            isBuff = !isArr && isBuffer(srcValue),
-            isTyped = !isArr && !isBuff && isTypedArray(srcValue);
-
         newValue = srcValue;
-        if (isArr || isBuff || isTyped) {
+        if (isArray(srcValue) || isTypedArray(srcValue)) {
           if (isArray(objValue)) {
             newValue = objValue;
           }
           else if (isArrayLikeObject(objValue)) {
             newValue = copyArray(objValue);
           }
-          else if (isBuff) {
-            isCommon = false;
-            newValue = cloneBuffer(srcValue, true);
-          }
-          else if (isTyped) {
-            isCommon = false;
-            newValue = cloneTypedArray(srcValue, true);
-          }
           else {
-            newValue = [];
+            isCommon = false;
+            newValue = baseClone(srcValue, true);
           }
         }
         else if (isPlainObject(srcValue) || isArguments(srcValue)) {
-          newValue = objValue;
           if (isArguments(objValue)) {
             newValue = toPlainObject(objValue);
           }
           else if (!isObject(objValue) || (srcIndex && isFunction(objValue))) {
-            newValue = initCloneObject(srcValue);
+            isCommon = false;
+            newValue = baseClone(srcValue, true);
+          }
+          else {
+            newValue = objValue;
           }
         }
         else {
@@ -16470,8 +16423,7 @@ return jQuery;
      * @returns {Array} Returns the random elements.
      */
     function baseSampleSize(collection, n) {
-      var array = values(collection);
-      return shuffleSelf(array, baseClamp(n, 0, array.length));
+      return shuffleSelf(values(collection), n);
     }
 
     /**
@@ -16535,8 +16487,8 @@ return jQuery;
      * @param {Function} string The `toString` result.
      * @returns {Function} Returns `func`.
      */
-    var baseSetToString = !defineProperty ? identity : function(func, string) {
-      return defineProperty(func, 'toString', {
+    var baseSetToString = !nativeDefineProperty ? identity : function(func, string) {
+      return nativeDefineProperty(func, 'toString', {
         'configurable': true,
         'enumerable': false,
         'value': constant(string),
@@ -16618,7 +16570,7 @@ return jQuery;
      */
     function baseSortedIndex(array, value, retHighest) {
       var low = 0,
-          high = array == null ? low : array.length;
+          high = array ? array.length : low;
 
       if (typeof value == 'number' && value === value && high <= HALF_MAX_ARRAY_LENGTH) {
         while (low < high) {
@@ -16654,7 +16606,7 @@ return jQuery;
       value = iteratee(value);
 
       var low = 0,
-          high = array == null ? 0 : array.length,
+          high = array ? array.length : 0,
           valIsNaN = value !== value,
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
@@ -16747,10 +16699,6 @@ return jQuery;
       // Exit early for strings to avoid a performance hit in some environments.
       if (typeof value == 'string') {
         return value;
-      }
-      if (isArray(value)) {
-        // Recursively convert values (susceptible to call stack limits).
-        return arrayMap(value, baseToString) + '';
       }
       if (isSymbol(value)) {
         return symbolToString ? symbolToString.call(value) : '';
@@ -16904,25 +16852,18 @@ return jQuery;
      * @returns {Array} Returns the new array of values.
      */
     function baseXor(arrays, iteratee, comparator) {
-      var length = arrays.length;
-      if (length < 2) {
-        return length ? baseUniq(arrays[0]) : [];
-      }
       var index = -1,
-          result = Array(length);
+          length = arrays.length;
 
       while (++index < length) {
-        var array = arrays[index],
-            othIndex = -1;
-
-        while (++othIndex < length) {
-          var othArray = arrays[othIndex];
-          if (othArray !== array) {
-            result[index] = baseDifference(result[index] || array, othArray, iteratee, comparator);
-          }
-        }
+        var result = result
+          ? arrayPush(
+              baseDifference(result, arrays[index], iteratee, comparator),
+              baseDifference(arrays[index], result, iteratee, comparator)
+            )
+          : arrays[index];
       }
-      return baseUniq(baseFlatten(result, 1), iteratee, comparator);
+      return (result && result.length) ? baseUniq(result, iteratee, comparator) : [];
     }
 
     /**
@@ -18460,33 +18401,6 @@ return jQuery;
     }
 
     /**
-     * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
-     *
-     * @private
-     * @param {*} value The value to query.
-     * @returns {string} Returns the raw `toStringTag`.
-     */
-    function getRawTag(value) {
-      var isOwn = hasOwnProperty.call(value, symToStringTag),
-          tag = value[symToStringTag];
-
-      try {
-        value[symToStringTag] = undefined;
-        var unmasked = true;
-      } catch (e) {}
-
-      var result = nativeObjectToString.call(value);
-      if (unmasked) {
-        if (isOwn) {
-          value[symToStringTag] = tag;
-        } else {
-          delete value[symToStringTag];
-        }
-      }
-      return result;
-    }
-
-    /**
      * Creates an array of the own enumerable symbol properties of `object`.
      *
      * @private
@@ -18528,9 +18442,9 @@ return jQuery;
         (Set && getTag(new Set) != setTag) ||
         (WeakMap && getTag(new WeakMap) != weakMapTag)) {
       getTag = function(value) {
-        var result = baseGetTag(value),
+        var result = objectToString.call(value),
             Ctor = result == objectTag ? value.constructor : undefined,
-            ctorString = Ctor ? toSource(Ctor) : '';
+            ctorString = Ctor ? toSource(Ctor) : undefined;
 
         if (ctorString) {
           switch (ctorString) {
@@ -18611,7 +18525,7 @@ return jQuery;
       if (result || ++index != length) {
         return result;
       }
-      length = object == null ? 0 : object.length;
+      length = object ? object.length : 0;
       return !!length && isLength(length) && isIndex(key, length) &&
         (isArray(object) || isArguments(object));
     }
@@ -19023,17 +18937,6 @@ return jQuery;
     }
 
     /**
-     * Converts `value` to a string using `Object.prototype.toString`.
-     *
-     * @private
-     * @param {*} value The value to convert.
-     * @returns {string} Returns the converted string.
-     */
-    function objectToString(value) {
-      return nativeObjectToString.call(value);
-    }
-
-    /**
      * A specialized version of `baseRest` which transforms the rest array.
      *
      * @private
@@ -19192,7 +19095,7 @@ return jQuery;
           length = array.length,
           lastIndex = length - 1;
 
-      size = size === undefined ? length : size;
+      size = size === undefined ? length : baseClamp(size, 0, length);
       while (++index < size) {
         var rand = baseRandom(index, lastIndex),
             value = array[rand];
@@ -19243,7 +19146,7 @@ return jQuery;
      * Converts `func` to its source code.
      *
      * @private
-     * @param {Function} func The function to convert.
+     * @param {Function} func The function to process.
      * @returns {string} Returns the source code.
      */
     function toSource(func) {
@@ -19323,7 +19226,7 @@ return jQuery;
       } else {
         size = nativeMax(toInteger(size), 0);
       }
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length || size < 1) {
         return [];
       }
@@ -19354,7 +19257,7 @@ return jQuery;
      */
     function compact(array) {
       var index = -1,
-          length = array == null ? 0 : array.length,
+          length = array ? array.length : 0,
           resIndex = 0,
           result = [];
 
@@ -19526,7 +19429,7 @@ return jQuery;
      * // => [1, 2, 3]
      */
     function drop(array, n, guard) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return [];
       }
@@ -19560,7 +19463,7 @@ return jQuery;
      * // => [1, 2, 3]
      */
     function dropRight(array, n, guard) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return [];
       }
@@ -19620,7 +19523,8 @@ return jQuery;
      * @since 3.0.0
      * @category Array
      * @param {Array} array The array to query.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the slice of `array`.
      * @example
      *
@@ -19681,7 +19585,7 @@ return jQuery;
      * // => [4, '*', '*', 10]
      */
     function fill(array, value, start, end) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return [];
       }
@@ -19701,7 +19605,8 @@ return jQuery;
      * @since 1.1.0
      * @category Array
      * @param {Array} array The array to inspect.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @param {number} [fromIndex=0] The index to search from.
      * @returns {number} Returns the index of the found element, else `-1`.
      * @example
@@ -19728,7 +19633,7 @@ return jQuery;
      * // => 2
      */
     function findIndex(array, predicate, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return -1;
       }
@@ -19748,7 +19653,8 @@ return jQuery;
      * @since 2.0.0
      * @category Array
      * @param {Array} array The array to inspect.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @param {number} [fromIndex=array.length-1] The index to search from.
      * @returns {number} Returns the index of the found element, else `-1`.
      * @example
@@ -19775,7 +19681,7 @@ return jQuery;
      * // => 0
      */
     function findLastIndex(array, predicate, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return -1;
       }
@@ -19804,7 +19710,7 @@ return jQuery;
      * // => [1, 2, [3, [4]], 5]
      */
     function flatten(array) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       return length ? baseFlatten(array, 1) : [];
     }
 
@@ -19823,7 +19729,7 @@ return jQuery;
      * // => [1, 2, 3, 4, 5]
      */
     function flattenDeep(array) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       return length ? baseFlatten(array, INFINITY) : [];
     }
 
@@ -19848,7 +19754,7 @@ return jQuery;
      * // => [1, 2, 3, [4], 5]
      */
     function flattenDepth(array, depth) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return [];
       }
@@ -19873,7 +19779,7 @@ return jQuery;
      */
     function fromPairs(pairs) {
       var index = -1,
-          length = pairs == null ? 0 : pairs.length,
+          length = pairs ? pairs.length : 0,
           result = {};
 
       while (++index < length) {
@@ -19929,7 +19835,7 @@ return jQuery;
      * // => 3
      */
     function indexOf(array, value, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return -1;
       }
@@ -19955,7 +19861,7 @@ return jQuery;
      * // => [1, 2]
      */
     function initial(array) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       return length ? baseSlice(array, 0, -1) : [];
     }
 
@@ -20045,8 +19951,9 @@ return jQuery;
       var comparator = last(arrays),
           mapped = arrayMap(arrays, castArrayLikeObject);
 
-      comparator = typeof comparator == 'function' ? comparator : undefined;
-      if (comparator) {
+      if (comparator === last(mapped)) {
+        comparator = undefined;
+      } else {
         mapped.pop();
       }
       return (mapped.length && mapped[0] === arrays[0])
@@ -20070,7 +19977,7 @@ return jQuery;
      * // => 'a~b~c'
      */
     function join(array, separator) {
-      return array == null ? '' : nativeJoin.call(array, separator);
+      return array ? nativeJoin.call(array, separator) : '';
     }
 
     /**
@@ -20088,7 +19995,7 @@ return jQuery;
      * // => 3
      */
     function last(array) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       return length ? array[length - 1] : undefined;
     }
 
@@ -20114,7 +20021,7 @@ return jQuery;
      * // => 1
      */
     function lastIndexOf(array, value, fromIndex) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return -1;
       }
@@ -20217,7 +20124,8 @@ return jQuery;
      * @category Array
      * @param {Array} array The array to modify.
      * @param {Array} values The values to remove.
-     * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee invoked per element.
      * @returns {Array} Returns `array`.
      * @example
      *
@@ -20287,7 +20195,7 @@ return jQuery;
      * // => ['b', 'd']
      */
     var pullAt = flatRest(function(array, indexes) {
-      var length = array == null ? 0 : array.length,
+      var length = array ? array.length : 0,
           result = baseAt(array, indexes);
 
       basePullAt(array, arrayMap(indexes, function(index) {
@@ -20310,7 +20218,8 @@ return jQuery;
      * @since 2.0.0
      * @category Array
      * @param {Array} array The array to modify.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the new array of removed elements.
      * @example
      *
@@ -20370,7 +20279,7 @@ return jQuery;
      * // => [3, 2, 1]
      */
     function reverse(array) {
-      return array == null ? array : nativeReverse.call(array);
+      return array ? nativeReverse.call(array) : array;
     }
 
     /**
@@ -20390,7 +20299,7 @@ return jQuery;
      * @returns {Array} Returns the slice of `array`.
      */
     function slice(array, start, end) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return [];
       }
@@ -20437,7 +20346,8 @@ return jQuery;
      * @category Array
      * @param {Array} array The sorted array to inspect.
      * @param {*} value The value to evaluate.
-     * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee invoked per element.
      * @returns {number} Returns the index at which `value` should be inserted
      *  into `array`.
      * @example
@@ -20472,7 +20382,7 @@ return jQuery;
      * // => 1
      */
     function sortedIndexOf(array, value) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (length) {
         var index = baseSortedIndex(array, value);
         if (index < length && eq(array[index], value)) {
@@ -20515,7 +20425,8 @@ return jQuery;
      * @category Array
      * @param {Array} array The sorted array to inspect.
      * @param {*} value The value to evaluate.
-     * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee invoked per element.
      * @returns {number} Returns the index at which `value` should be inserted
      *  into `array`.
      * @example
@@ -20550,7 +20461,7 @@ return jQuery;
      * // => 3
      */
     function sortedLastIndexOf(array, value) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (length) {
         var index = baseSortedIndex(array, value, true) - 1;
         if (eq(array[index], value)) {
@@ -20618,7 +20529,7 @@ return jQuery;
      * // => [2, 3]
      */
     function tail(array) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       return length ? baseSlice(array, 1, length) : [];
     }
 
@@ -20681,7 +20592,7 @@ return jQuery;
      * // => []
      */
     function takeRight(array, n, guard) {
-      var length = array == null ? 0 : array.length;
+      var length = array ? array.length : 0;
       if (!length) {
         return [];
       }
@@ -20700,7 +20611,8 @@ return jQuery;
      * @since 3.0.0
      * @category Array
      * @param {Array} array The array to query.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the slice of `array`.
      * @example
      *
@@ -20741,7 +20653,8 @@ return jQuery;
      * @since 3.0.0
      * @category Array
      * @param {Array} array The array to query.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the slice of `array`.
      * @example
      *
@@ -20804,7 +20717,8 @@ return jQuery;
      * @since 4.0.0
      * @category Array
      * @param {...Array} [arrays] The arrays to inspect.
-     * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee invoked per element.
      * @returns {Array} Returns the new array of combined values.
      * @example
      *
@@ -20846,7 +20760,9 @@ return jQuery;
      */
     var unionWith = baseRest(function(arrays) {
       var comparator = last(arrays);
-      comparator = typeof comparator == 'function' ? comparator : undefined;
+      if (isArrayLikeObject(comparator)) {
+        comparator = undefined;
+      }
       return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), undefined, comparator);
     });
 
@@ -20869,7 +20785,9 @@ return jQuery;
      * // => [2, 1]
      */
     function uniq(array) {
-      return (array && array.length) ? baseUniq(array) : [];
+      return (array && array.length)
+        ? baseUniq(array)
+        : [];
     }
 
     /**
@@ -20884,7 +20802,8 @@ return jQuery;
      * @since 4.0.0
      * @category Array
      * @param {Array} array The array to inspect.
-     * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee invoked per element.
      * @returns {Array} Returns the new duplicate free array.
      * @example
      *
@@ -20896,7 +20815,9 @@ return jQuery;
      * // => [{ 'x': 1 }, { 'x': 2 }]
      */
     function uniqBy(array, iteratee) {
-      return (array && array.length) ? baseUniq(array, getIteratee(iteratee, 2)) : [];
+      return (array && array.length)
+        ? baseUniq(array, getIteratee(iteratee, 2))
+        : [];
     }
 
     /**
@@ -20920,8 +20841,9 @@ return jQuery;
      * // => [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]
      */
     function uniqWith(array, comparator) {
-      comparator = typeof comparator == 'function' ? comparator : undefined;
-      return (array && array.length) ? baseUniq(array, undefined, comparator) : [];
+      return (array && array.length)
+        ? baseUniq(array, undefined, comparator)
+        : [];
     }
 
     /**
@@ -21053,7 +20975,8 @@ return jQuery;
      * @since 4.0.0
      * @category Array
      * @param {...Array} [arrays] The arrays to inspect.
-     * @param {Function} [iteratee=_.identity] The iteratee invoked per element.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee invoked per element.
      * @returns {Array} Returns the new array of filtered values.
      * @example
      *
@@ -21095,7 +21018,9 @@ return jQuery;
      */
     var xorWith = baseRest(function(arrays) {
       var comparator = last(arrays);
-      comparator = typeof comparator == 'function' ? comparator : undefined;
+      if (isArrayLikeObject(comparator)) {
+        comparator = undefined;
+      }
       return baseXor(arrayFilter(arrays, isArrayLikeObject), undefined, comparator);
     });
 
@@ -21166,8 +21091,7 @@ return jQuery;
      * @since 3.8.0
      * @category Array
      * @param {...Array} [arrays] The arrays to process.
-     * @param {Function} [iteratee=_.identity] The function to combine
-     *  grouped values.
+     * @param {Function} [iteratee=_.identity] The function to combine grouped values.
      * @returns {Array} Returns the new array of grouped elements.
      * @example
      *
@@ -21544,7 +21468,8 @@ return jQuery;
      * @since 0.5.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [iteratee=_.identity] The iteratee to transform keys.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee to transform keys.
      * @returns {Object} Returns the composed aggregate object.
      * @example
      *
@@ -21578,7 +21503,8 @@ return jQuery;
      * @since 0.1.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @param- {Object} [guard] Enables use as an iteratee for methods like `_.map`.
      * @returns {boolean} Returns `true` if all elements pass the predicate check,
      *  else `false`.
@@ -21624,7 +21550,8 @@ return jQuery;
      * @since 0.1.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the new filtered array.
      * @see _.reject
      * @example
@@ -21664,7 +21591,8 @@ return jQuery;
      * @since 0.1.0
      * @category Collection
      * @param {Array|Object} collection The collection to inspect.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @param {number} [fromIndex=0] The index to search from.
      * @returns {*} Returns the matched element, else `undefined`.
      * @example
@@ -21701,7 +21629,8 @@ return jQuery;
      * @since 2.0.0
      * @category Collection
      * @param {Array|Object} collection The collection to inspect.
-     * @param {Function} [predicate=_.identity] The function invoked per iteration.
+     * @param {Function} [predicate=_.identity]
+     *  The function invoked per iteration.
      * @param {number} [fromIndex=collection.length-1] The index to search from.
      * @returns {*} Returns the matched element, else `undefined`.
      * @example
@@ -21723,7 +21652,8 @@ return jQuery;
      * @since 4.0.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+     * @param {Function} [iteratee=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the new flattened array.
      * @example
      *
@@ -21747,7 +21677,8 @@ return jQuery;
      * @since 4.7.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+     * @param {Function} [iteratee=_.identity]
+     *  The function invoked per iteration.
      * @returns {Array} Returns the new flattened array.
      * @example
      *
@@ -21771,7 +21702,8 @@ return jQuery;
      * @since 4.7.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+     * @param {Function} [iteratee=_.identity]
+     *  The function invoked per iteration.
      * @param {number} [depth=1] The maximum recursion depth.
      * @returns {Array} Returns the new flattened array.
      * @example
@@ -21860,7 +21792,8 @@ return jQuery;
      * @since 0.1.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [iteratee=_.identity] The iteratee to transform keys.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee to transform keys.
      * @returns {Object} Returns the composed aggregate object.
      * @example
      *
@@ -21969,7 +21902,8 @@ return jQuery;
      * @since 4.0.0
      * @category Collection
      * @param {Array|Object} collection The collection to iterate over.
-     * @param {Function} [iteratee=_.identity] The iteratee to transform keys.
+     * @param {Function} [iteratee=_.identity]
+     *  The iteratee to transform keys.
      * @returns {Object} Returns the composed aggregate object.
      * @example
      *
@@ -22984,7 +22918,7 @@ return jQuery;
      * function. Its creation may be customized by replacing the `_.memoize.Cache`
      * constructor with one whose instances implement the
      * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
-     * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+     * method interface of `delete`, `get`, `has`, and `set`.
      *
      * @static
      * @memberOf _
@@ -23018,7 +22952,7 @@ return jQuery;
      * _.memoize.Cache = WeakMap;
      */
     function memoize(func, resolver) {
-      if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+      if (typeof func != 'function' || (resolver && typeof resolver != 'function')) {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
       var memoized = function() {
@@ -23434,7 +23368,8 @@ return jQuery;
      * // => '<p>fred, barney, &amp; pebbles</p>'
      */
     function wrap(value, wrapper) {
-      return partial(castFunction(wrapper), value);
+      wrapper = wrapper == null ? identity : wrapper;
+      return partial(wrapper, value);
     }
 
     /*------------------------------------------------------------------------*/
@@ -23542,7 +23477,6 @@ return jQuery;
      * // => 0
      */
     function cloneWith(value, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
       return baseClone(value, false, true, customizer);
     }
 
@@ -23597,7 +23531,6 @@ return jQuery;
      * // => 20
      */
     function cloneDeepWith(value, customizer) {
-      customizer = typeof customizer == 'function' ? customizer : undefined;
       return baseClone(value, true, true, customizer);
     }
 
@@ -23735,10 +23668,11 @@ return jQuery;
      * _.isArguments([1, 2, 3]);
      * // => false
      */
-    var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-      return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-        !propertyIsEnumerable.call(value, 'callee');
-    };
+    function isArguments(value) {
+      // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
+      return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+        (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+    }
 
     /**
      * Checks if `value` is classified as an `Array` object.
@@ -23861,7 +23795,7 @@ return jQuery;
      */
     function isBoolean(value) {
       return value === true || value === false ||
-        (isObjectLike(value) && baseGetTag(value) == boolTag);
+        (isObjectLike(value) && objectToString.call(value) == boolTag);
     }
 
     /**
@@ -23920,7 +23854,7 @@ return jQuery;
      * // => false
      */
     function isElement(value) {
-      return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+      return value != null && value.nodeType === 1 && isObjectLike(value) && !isPlainObject(value);
     }
 
     /**
@@ -23957,12 +23891,9 @@ return jQuery;
      * // => false
      */
     function isEmpty(value) {
-      if (value == null) {
-        return true;
-      }
       if (isArrayLike(value) &&
-          (isArray(value) || typeof value == 'string' || typeof value.splice == 'function' ||
-            isBuffer(value) || isTypedArray(value) || isArguments(value))) {
+          (isArray(value) || typeof value == 'string' ||
+            typeof value.splice == 'function' || isBuffer(value) || isArguments(value))) {
         return !value.length;
       }
       var tag = getTag(value);
@@ -23970,7 +23901,7 @@ return jQuery;
         return !value.size;
       }
       if (isPrototype(value)) {
-        return !baseKeys(value).length;
+        return !nativeKeys(value).length;
       }
       for (var key in value) {
         if (hasOwnProperty.call(value, key)) {
@@ -24072,9 +24003,8 @@ return jQuery;
       if (!isObjectLike(value)) {
         return false;
       }
-      var tag = baseGetTag(value);
-      return tag == errorTag || tag == domExcTag ||
-        (typeof value.message == 'string' && typeof value.name == 'string' && !isPlainObject(value));
+      return (objectToString.call(value) == errorTag) ||
+        (typeof value.message == 'string' && typeof value.name == 'string');
     }
 
     /**
@@ -24125,13 +24055,10 @@ return jQuery;
      * // => false
      */
     function isFunction(value) {
-      if (!isObject(value)) {
-        return false;
-      }
       // The use of `Object#toString` avoids issues with the `typeof` operator
-      // in Safari 9 which returns 'object' for typed arrays and other constructors.
-      var tag = baseGetTag(value);
-      return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+      // in Safari 8-9 which returns 'object' for typed array and other constructors.
+      var tag = isObject(value) ? objectToString.call(value) : '';
+      return tag == funcTag || tag == genTag;
     }
 
     /**
@@ -24482,7 +24409,7 @@ return jQuery;
      */
     function isNumber(value) {
       return typeof value == 'number' ||
-        (isObjectLike(value) && baseGetTag(value) == numberTag);
+        (isObjectLike(value) && objectToString.call(value) == numberTag);
     }
 
     /**
@@ -24514,7 +24441,7 @@ return jQuery;
      * // => true
      */
     function isPlainObject(value) {
-      if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
+      if (!isObjectLike(value) || objectToString.call(value) != objectTag) {
         return false;
       }
       var proto = getPrototype(value);
@@ -24522,8 +24449,8 @@ return jQuery;
         return true;
       }
       var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
-      return typeof Ctor == 'function' && Ctor instanceof Ctor &&
-        funcToString.call(Ctor) == objectCtorString;
+      return (typeof Ctor == 'function' &&
+        Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString);
     }
 
     /**
@@ -24614,7 +24541,7 @@ return jQuery;
      */
     function isString(value) {
       return typeof value == 'string' ||
-        (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag);
+        (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
     }
 
     /**
@@ -24636,7 +24563,7 @@ return jQuery;
      */
     function isSymbol(value) {
       return typeof value == 'symbol' ||
-        (isObjectLike(value) && baseGetTag(value) == symbolTag);
+        (isObjectLike(value) && objectToString.call(value) == symbolTag);
     }
 
     /**
@@ -24718,7 +24645,7 @@ return jQuery;
      * // => false
      */
     function isWeakSet(value) {
-      return isObjectLike(value) && baseGetTag(value) == weakSetTag;
+      return isObjectLike(value) && objectToString.call(value) == weakSetTag;
     }
 
     /**
@@ -24803,8 +24730,8 @@ return jQuery;
       if (isArrayLike(value)) {
         return isString(value) ? stringToArray(value) : copyArray(value);
       }
-      if (symIterator && value[symIterator]) {
-        return iteratorToArray(value[symIterator]());
+      if (iteratorSymbol && value[iteratorSymbol]) {
+        return iteratorToArray(value[iteratorSymbol]());
       }
       var tag = getTag(value),
           func = tag == mapTag ? mapToArray : (tag == setTag ? setToArray : values);
@@ -25019,8 +24946,8 @@ return jQuery;
      * @memberOf _
      * @since 4.0.0
      * @category Lang
-     * @param {*} value The value to convert.
-     * @returns {string} Returns the converted string.
+     * @param {*} value The value to process.
+     * @returns {string} Returns the string.
      * @example
      *
      * _.toString(null);
@@ -25237,7 +25164,7 @@ return jQuery;
      */
     function create(prototype, properties) {
       var result = baseCreate(prototype);
-      return properties == null ? result : baseAssign(result, properties);
+      return properties ? baseAssign(result, properties) : result;
     }
 
     /**
@@ -26204,23 +26131,22 @@ return jQuery;
      * // => { '1': ['a', 'c'], '2': ['b'] }
      */
     function transform(object, iteratee, accumulator) {
-      var isArr = isArray(object),
-          isArrLike = isArr || isBuffer(object) || isTypedArray(object);
-
+      var isArr = isArray(object) || isTypedArray(object);
       iteratee = getIteratee(iteratee, 4);
+
       if (accumulator == null) {
-        var Ctor = object && object.constructor;
-        if (isArrLike) {
-          accumulator = isArr ? new Ctor : [];
-        }
-        else if (isObject(object)) {
-          accumulator = isFunction(Ctor) ? baseCreate(getPrototype(object)) : {};
-        }
-        else {
+        if (isArr || isObject(object)) {
+          var Ctor = object.constructor;
+          if (isArr) {
+            accumulator = isArray(object) ? new Ctor : [];
+          } else {
+            accumulator = isFunction(Ctor) ? baseCreate(getPrototype(object)) : {};
+          }
+        } else {
           accumulator = {};
         }
       }
-      (isArrLike ? arrayEach : baseForOwn)(object, function(value, index, object) {
+      (isArr ? arrayEach : baseForOwn)(object, function(value, index, object) {
         return iteratee(accumulator, value, index, object);
       });
       return accumulator;
@@ -26344,7 +26270,7 @@ return jQuery;
      * // => ['h', 'i']
      */
     function values(object) {
-      return object == null ? [] : baseValues(object, keys(object));
+      return object ? baseValues(object, keys(object)) : [];
     }
 
     /**
@@ -27731,7 +27657,7 @@ return jQuery;
      * // => 'no match'
      */
     function cond(pairs) {
-      var length = pairs == null ? 0 : pairs.length,
+      var length = pairs ? pairs.length : 0,
           toIteratee = getIteratee();
 
       pairs = !length ? [] : arrayMap(pairs, function(pair) {
@@ -29483,8 +29409,8 @@ return jQuery;
     // Add lazy aliases.
     lodash.prototype.first = lodash.prototype.head;
 
-    if (symIterator) {
-      lodash.prototype[symIterator] = wrapperToIterator;
+    if (iteratorSymbol) {
+      lodash.prototype[iteratorSymbol] = wrapperToIterator;
     }
     return lodash;
   });
@@ -53780,377 +53706,598 @@ module.exports = {
     },
 	data: 
 	[
-		{date: '2016-10-30', time: '14:30:33', version: 7641, r_version: 2, bt1: 54, bt2: 254, bt3: 234, bt6: 548, bt7: 565, bt16: 14, bt18: 261, bt19: 277, bt20: 184, bt21: 12, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '14:35:38', version: 7641, r_version: 2, bt1: 53, bt2: 258, bt3: 235, bt6: 547, bt7: 566, bt16: 14, bt18: 266, bt19: 276, bt20: 184, bt21: 16, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '14:40:38', version: 7641, r_version: 2, bt1: 53, bt2: 259, bt3: 236, bt6: 546, bt7: 565, bt16: 15, bt18: 267, bt19: 277, bt20: 185, bt21: 15, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '14:45:38', version: 7641, r_version: 2, bt1: 53, bt2: 259, bt3: 236, bt6: 542, bt7: 566, bt16: 17, bt18: 268, bt19: 276, bt20: 185, bt21: 16, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '14:50:43', version: 7641, r_version: 2, bt1: 53, bt2: 259, bt3: 235, bt6: 533, bt7: 566, bt16: 16, bt18: 268, bt19: 276, bt20: 186, bt21: 15, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '14:55:43', version: 7641, r_version: 2, bt1: 53, bt2: 259, bt3: 236, bt6: 529, bt7: 565, bt16: 17, bt18: 269, bt19: 276, bt20: 185, bt21: 17, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:00:43', version: 7641, r_version: 2, bt1: 52, bt2: 259, bt3: 236, bt6: 524, bt7: 564, bt16: 16, bt18: 268, bt19: 275, bt20: 184, bt21: 17, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:05:48', version: 7641, r_version: 2, bt1: 52, bt2: 258, bt3: 235, bt6: 521, bt7: 564, bt16: 18, bt18: 268, bt19: 275, bt20: 184, bt21: 14, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:10:48', version: 7641, r_version: 2, bt1: 52, bt2: 258, bt3: 237, bt6: 520, bt7: 564, bt16: 15, bt18: 268, bt19: 274, bt20: 185, bt21: 16, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:15:48', version: 7641, r_version: 2, bt1: 52, bt2: 259, bt3: 235, bt6: 517, bt7: 564, bt16: 17, bt18: 268, bt19: 272, bt20: 184, bt21: 16, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:20:52', version: 7641, r_version: 2, bt1: 52, bt2: 258, bt3: 236, bt6: 513, bt7: 565, bt16: 16, bt18: 268, bt19: 271, bt20: 186, bt21: 18, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:25:52', version: 7641, r_version: 2, bt1: 52, bt2: 259, bt3: 235, bt6: 513, bt7: 564, bt16: 14, bt18: 267, bt19: 273, bt20: 185, bt21: 22, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:30:52', version: 7641, r_version: 2, bt1: 51, bt2: 258, bt3: 236, bt6: 472, bt7: 563, bt16: 19, bt18: 268, bt19: 271, bt20: 185, bt21: 31, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '15:35:57', version: 7641, r_version: 2, bt1: 52, bt2: 266, bt3: 235, bt6: 384, bt7: 564, bt16: 28, bt18: 270, bt19: 318, bt20: 188, bt21: 33, bt22: 192, tot_int_add: 467, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '15:40:57', version: 7641, r_version: 2, bt1: 51, bt2: 276, bt3: 238, bt6: 399, bt7: 563, bt16: 27, bt18: 285, bt19: 399, bt20: 185, bt21: 29, bt22: 207, tot_int_add: 559, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '15:45:57', version: 7641, r_version: 2, bt1: 50, bt2: 267, bt3: 239, bt6: 439, bt7: 564, bt16: 27, bt18: 306, bt19: 447, bt20: 185, bt21: 30, bt22: 202, tot_int_add: 559, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '15:51:01', version: 7641, r_version: 2, bt1: 50, bt2: 267, bt3: 240, bt6: 486, bt7: 563, bt16: 27, bt18: 333, bt19: 497, bt20: 184, bt21: 28, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '15:56:01', version: 7641, r_version: 2, bt1: 50, bt2: 264, bt3: 238, bt6: 512, bt7: 564, bt16: 27, bt18: 357, bt19: 504, bt20: 186, bt21: 28, bt22: 196, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '16:01:01', version: 7641, r_version: 2, bt1: 50, bt2: 254, bt3: 238, bt6: 488, bt7: 563, bt16: 28, bt18: 370, bt19: 477, bt20: 187, bt21: 29, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 44, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '16:06:00', version: 7641, r_version: 2, bt1: 50, bt2: 253, bt3: 236, bt6: 474, bt7: 562, bt16: 27, bt18: 380, bt19: 463, bt20: 185, bt21: 28, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 45, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '16:11:00', version: 7641, r_version: 2, bt1: 49, bt2: 235, bt3: 236, bt6: 468, bt7: 562, bt16: 120, bt18: 385, bt19: 454, bt20: 185, bt21: 129, bt22: 186, tot_int_add: 200, alarms: 0, calc_supply: 259, bt1_avg: 45, relays: 2, prio: 20},
-		{date: '2016-10-30', time: '16:16:00', version: 7641, r_version: 2, bt1: 49, bt2: 253, bt3: 235, bt6: 491, bt7: 563, bt16: 144, bt18: 385, bt19: 506, bt20: 185, bt21: 134, bt22: 185, tot_int_add: 559, alarms: 0, calc_supply: 259, bt1_avg: 45, relays: 2, prio: 20},
-		{date: '2016-10-30', time: '16:20:59', version: 7641, r_version: 2, bt1: 49, bt2: 252, bt3: 236, bt6: 515, bt7: 561, bt16: 155, bt18: 380, bt19: 507, bt20: 185, bt21: 139, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 45, relays: 2, prio: 50},
-		{date: '2016-10-30', time: '16:25:59', version: 7641, r_version: 2, bt1: 49, bt2: 251, bt3: 235, bt6: 497, bt7: 561, bt16: 40, bt18: 355, bt19: 488, bt20: 184, bt21: 31, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 45, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '16:30:59', version: 7641, r_version: 2, bt1: 47, bt2: 250, bt3: 236, bt6: 487, bt7: 562, bt16: 25, bt18: 352, bt19: 478, bt20: 184, bt21: 27, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 260, bt1_avg: 45, relays: 11, prio: 50},
-		{date: '2016-10-30', time: '16:36:04', version: 7641, r_version: 2, bt1: 47, bt2: 251, bt3: 236, bt6: 479, bt7: 560, bt16: 132, bt18: 355, bt19: 463, bt20: 185, bt21: 128, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 260, bt1_avg: 45, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '16:41:04', version: 7641, r_version: 2, bt1: 47, bt2: 251, bt3: 235, bt6: 479, bt7: 560, bt16: 147, bt18: 334, bt19: 451, bt20: 185, bt21: 135, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 260, bt1_avg: 45, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '16:46:04', version: 7641, r_version: 2, bt1: 47, bt2: 252, bt3: 235, bt6: 477, bt7: 560, bt16: 157, bt18: 284, bt19: 439, bt20: 183, bt21: 140, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 260, bt1_avg: 45, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '16:51:09', version: 7641, r_version: 2, bt1: 47, bt2: 249, bt3: 235, bt6: 476, bt7: 560, bt16: 27, bt18: 263, bt19: 423, bt20: 185, bt21: 26, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 260, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '16:56:09', version: 7641, r_version: 2, bt1: 47, bt2: 250, bt3: 234, bt6: 476, bt7: 560, bt16: 20, bt18: 276, bt19: 399, bt20: 184, bt21: 19, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 260, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:01:09', version: 7641, r_version: 2, bt1: 46, bt2: 252, bt3: 235, bt6: 475, bt7: 559, bt16: 15, bt18: 278, bt19: 378, bt20: 183, bt21: 17, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 257, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:05:14', version: 7641, r_version: 2, bt1: 46, bt2: 252, bt3: 236, bt6: 476, bt7: 559, bt16: 19, bt18: 282, bt19: 366, bt20: 184, bt21: 17, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:10:14', version: 7641, r_version: 2, bt1: 46, bt2: 253, bt3: 235, bt6: 476, bt7: 560, bt16: 17, bt18: 284, bt19: 362, bt20: 183, bt21: 17, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:15:14', version: 7641, r_version: 2, bt1: 46, bt2: 254, bt3: 235, bt6: 476, bt7: 559, bt16: 15, bt18: 285, bt19: 361, bt20: 184, bt21: 17, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:20:19', version: 7641, r_version: 2, bt1: 46, bt2: 253, bt3: 235, bt6: 475, bt7: 559, bt16: 16, bt18: 285, bt19: 359, bt20: 183, bt21: 16, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:25:19', version: 7641, r_version: 2, bt1: 46, bt2: 254, bt3: 235, bt6: 476, bt7: 559, bt16: 16, bt18: 284, bt19: 359, bt20: 183, bt21: 15, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:30:19', version: 7641, r_version: 2, bt1: 44, bt2: 253, bt3: 235, bt6: 477, bt7: 559, bt16: 15, bt18: 284, bt19: 358, bt20: 183, bt21: 17, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:35:24', version: 7641, r_version: 2, bt1: 44, bt2: 253, bt3: 234, bt6: 476, bt7: 560, bt16: 15, bt18: 284, bt19: 357, bt20: 183, bt21: 16, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:40:24', version: 7641, r_version: 2, bt1: 44, bt2: 254, bt3: 235, bt6: 477, bt7: 558, bt16: 16, bt18: 285, bt19: 356, bt20: 183, bt21: 16, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:45:24', version: 7641, r_version: 2, bt1: 44, bt2: 253, bt3: 235, bt6: 477, bt7: 558, bt16: 16, bt18: 284, bt19: 356, bt20: 182, bt21: 15, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:50:29', version: 7641, r_version: 2, bt1: 44, bt2: 254, bt3: 235, bt6: 477, bt7: 557, bt16: 15, bt18: 284, bt19: 357, bt20: 183, bt21: 17, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '17:55:29', version: 7641, r_version: 2, bt1: 44, bt2: 253, bt3: 235, bt6: 477, bt7: 557, bt16: 14, bt18: 284, bt19: 356, bt20: 183, bt21: 14, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:00:29', version: 7641, r_version: 2, bt1: 44, bt2: 254, bt3: 235, bt6: 477, bt7: 556, bt16: 28, bt18: 284, bt19: 355, bt20: 183, bt21: 52, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '18:05:34', version: 7641, r_version: 2, bt1: 44, bt2: 245, bt3: 235, bt6: 477, bt7: 557, bt16: 129, bt18: 255, bt19: 352, bt20: 183, bt21: 121, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '18:10:34', version: 7641, r_version: 2, bt1: 44, bt2: 240, bt3: 234, bt6: 476, bt7: 556, bt16: 142, bt18: 242, bt19: 332, bt20: 184, bt21: 135, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '18:15:34', version: 7641, r_version: 2, bt1: 44, bt2: 241, bt3: 233, bt6: 476, bt7: 557, bt16: 57, bt18: 242, bt19: 284, bt20: 184, bt21: 53, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:20:39', version: 7641, r_version: 2, bt1: 43, bt2: 245, bt3: 232, bt6: 475, bt7: 557, bt16: 16, bt18: 256, bt19: 276, bt20: 184, bt21: 18, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:25:39', version: 7641, r_version: 2, bt1: 43, bt2: 251, bt3: 234, bt6: 475, bt7: 556, bt16: 16, bt18: 260, bt19: 280, bt20: 184, bt21: 18, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:30:38', version: 7641, r_version: 2, bt1: 43, bt2: 251, bt3: 234, bt6: 475, bt7: 556, bt16: 15, bt18: 265, bt19: 284, bt20: 183, bt21: 17, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 248, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:35:43', version: 7641, r_version: 2, bt1: 43, bt2: 251, bt3: 234, bt6: 475, bt7: 555, bt16: 16, bt18: 266, bt19: 286, bt20: 181, bt21: 16, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 249, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:40:43', version: 7641, r_version: 2, bt1: 43, bt2: 253, bt3: 234, bt6: 475, bt7: 556, bt16: 16, bt18: 266, bt19: 289, bt20: 183, bt21: 15, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 249, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:45:43', version: 7641, r_version: 2, bt1: 43, bt2: 254, bt3: 234, bt6: 474, bt7: 556, bt16: 13, bt18: 266, bt19: 290, bt20: 183, bt21: 15, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 249, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:50:48', version: 7641, r_version: 2, bt1: 43, bt2: 252, bt3: 234, bt6: 474, bt7: 555, bt16: 15, bt18: 267, bt19: 291, bt20: 183, bt21: 16, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 249, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '18:55:48', version: 7641, r_version: 2, bt1: 43, bt2: 252, bt3: 234, bt6: 472, bt7: 556, bt16: 15, bt18: 267, bt19: 292, bt20: 183, bt21: 18, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 249, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:00:48', version: 7641, r_version: 2, bt1: 43, bt2: 253, bt3: 235, bt6: 472, bt7: 556, bt16: 14, bt18: 267, bt19: 292, bt20: 183, bt21: 17, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:05:53', version: 7641, r_version: 2, bt1: 43, bt2: 253, bt3: 235, bt6: 471, bt7: 555, bt16: 15, bt18: 267, bt19: 292, bt20: 183, bt21: 16, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:10:53', version: 7641, r_version: 2, bt1: 42, bt2: 252, bt3: 235, bt6: 470, bt7: 556, bt16: 16, bt18: 268, bt19: 290, bt20: 183, bt21: 17, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:15:53', version: 7641, r_version: 2, bt1: 42, bt2: 253, bt3: 235, bt6: 471, bt7: 555, bt16: 13, bt18: 268, bt19: 292, bt20: 183, bt21: 14, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:20:58', version: 7641, r_version: 2, bt1: 42, bt2: 253, bt3: 235, bt6: 470, bt7: 555, bt16: 16, bt18: 268, bt19: 291, bt20: 184, bt21: 15, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 45, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:25:58', version: 7641, r_version: 2, bt1: 42, bt2: 253, bt3: 234, bt6: 470, bt7: 555, bt16: 16, bt18: 268, bt19: 292, bt20: 183, bt21: 16, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:30:58', version: 7641, r_version: 2, bt1: 41, bt2: 253, bt3: 234, bt6: 469, bt7: 556, bt16: 16, bt18: 267, bt19: 292, bt20: 183, bt21: 17, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:36:02', version: 7641, r_version: 2, bt1: 41, bt2: 253, bt3: 235, bt6: 469, bt7: 554, bt16: 16, bt18: 267, bt19: 292, bt20: 183, bt21: 18, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:41:02', version: 7641, r_version: 2, bt1: 41, bt2: 252, bt3: 234, bt6: 465, bt7: 555, bt16: 13, bt18: 268, bt19: 291, bt20: 183, bt21: 16, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 250, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:46:02', version: 7641, r_version: 2, bt1: 41, bt2: 253, bt3: 235, bt6: 462, bt7: 554, bt16: 15, bt18: 267, bt19: 291, bt20: 182, bt21: 15, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 251, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:51:06', version: 7641, r_version: 2, bt1: 41, bt2: 252, bt3: 234, bt6: 455, bt7: 553, bt16: 14, bt18: 266, bt19: 289, bt20: 183, bt21: 17, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 251, bt1_avg: 44, relays: 3, prio: 30},
-		{date: '2016-10-30', time: '19:56:06', version: 7641, r_version: 2, bt1: 41, bt2: 246, bt3: 234, bt6: 451, bt7: 553, bt16: 16, bt18: 267, bt19: 288, bt20: 184, bt21: 15, bt22: 185, tot_int_add: 200, alarms: 0, calc_supply: 251, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '20:01:06', version: 7641, r_version: 2, bt1: 41, bt2: 267, bt3: 234, bt6: 445, bt7: 554, bt16: 16, bt18: 283, bt19: 373, bt20: 183, bt21: 14, bt22: 193, tot_int_add: 467, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '20:06:05', version: 7641, r_version: 2, bt1: 41, bt2: 263, bt3: 235, bt6: 454, bt7: 553, bt16: 17, bt18: 306, bt19: 453, bt20: 182, bt21: 18, bt22: 193, tot_int_add: 559, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '20:11:05', version: 7641, r_version: 2, bt1: 41, bt2: 261, bt3: 236, bt6: 496, bt7: 552, bt16: 17, bt18: 339, bt19: 511, bt20: 183, bt21: 18, bt22: 191, tot_int_add: 559, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '20:16:05', version: 7641, r_version: 2, bt1: 40, bt2: 259, bt3: 236, bt6: 507, bt7: 552, bt16: 17, bt18: 361, bt19: 497, bt20: 183, bt21: 19, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '20:21:10', version: 7641, r_version: 2, bt1: 40, bt2: 251, bt3: 235, bt6: 492, bt7: 552, bt16: 16, bt18: 373, bt19: 483, bt20: 183, bt21: 18, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '20:26:09', version: 7641, r_version: 2, bt1: 40, bt2: 250, bt3: 234, bt6: 484, bt7: 553, bt16: 14, bt18: 385, bt19: 473, bt20: 184, bt21: 19, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '20:31:09', version: 7641, r_version: 2, bt1: 40, bt2: 249, bt3: 234, bt6: 478, bt7: 552, bt16: 127, bt18: 388, bt19: 444, bt20: 183, bt21: 123, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '20:35:15', version: 7641, r_version: 2, bt1: 40, bt2: 246, bt3: 233, bt6: 470, bt7: 552, bt16: 138, bt18: 379, bt19: 431, bt20: 183, bt21: 129, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 2, prio: 30},
-		{date: '2016-10-30', time: '20:40:14', version: 7641, r_version: 2, bt1: 40, bt2: 235, bt3: 233, bt6: 465, bt7: 552, bt16: 148, bt18: 363, bt19: 442, bt20: 183, bt21: 137, bt22: 170, tot_int_add: 467, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 10, prio: 20},
-		{date: '2016-10-30', time: '20:45:14', version: 7641, r_version: 2, bt1: 40, bt2: 248, bt3: 232, bt6: 504, bt7: 551, bt16: 17, bt18: 361, bt19: 525, bt20: 182, bt21: 23, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '20:50:19', version: 7641, r_version: 2, bt1: 40, bt2: 245, bt3: 233, bt6: 505, bt7: 552, bt16: 25, bt18: 364, bt19: 486, bt20: 184, bt21: 37, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 50},
-		{date: '2016-10-30', time: '20:55:19', version: 7641, r_version: 2, bt1: 40, bt2: 232, bt3: 234, bt6: 428, bt7: 550, bt16: 42, bt18: 380, bt19: 421, bt20: 188, bt21: 51, bt22: 177, tot_int_add: 200, alarms: 0, calc_supply: 252, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:00:19', version: 7641, r_version: 2, bt1: 40, bt2: 246, bt3: 229, bt6: 402, bt7: 547, bt16: 50, bt18: 396, bt19: 424, bt20: 193, bt21: 53, bt22: 175, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:05:24', version: 7641, r_version: 2, bt1: 40, bt2: 253, bt3: 232, bt6: 411, bt7: 542, bt16: 50, bt18: 408, bt19: 443, bt20: 192, bt21: 54, bt22: 184, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:10:24', version: 7641, r_version: 2, bt1: 40, bt2: 254, bt3: 234, bt6: 415, bt7: 537, bt16: 50, bt18: 415, bt19: 442, bt20: 192, bt21: 53, bt22: 185, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:15:24', version: 7641, r_version: 2, bt1: 40, bt2: 257, bt3: 234, bt6: 423, bt7: 535, bt16: 40, bt18: 421, bt19: 448, bt20: 187, bt21: 44, bt22: 185, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:20:28', version: 7641, r_version: 2, bt1: 40, bt2: 258, bt3: 235, bt6: 443, bt7: 533, bt16: 33, bt18: 429, bt19: 469, bt20: 185, bt21: 39, bt22: 190, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:25:28', version: 7641, r_version: 2, bt1: 40, bt2: 259, bt3: 235, bt6: 454, bt7: 531, bt16: 30, bt18: 438, bt19: 485, bt20: 184, bt21: 33, bt22: 191, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:30:28', version: 7641, r_version: 2, bt1: 40, bt2: 261, bt3: 235, bt6: 470, bt7: 530, bt16: 29, bt18: 439, bt19: 502, bt20: 184, bt21: 35, bt22: 192, tot_int_add: 559, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:35:28', version: 7641, r_version: 2, bt1: 40, bt2: 264, bt3: 235, bt6: 484, bt7: 529, bt16: 27, bt18: 419, bt19: 514, bt20: 183, bt21: 28, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:40:28', version: 7641, r_version: 2, bt1: 40, bt2: 236, bt3: 236, bt6: 452, bt7: 528, bt16: 27, bt18: 406, bt19: 457, bt20: 184, bt21: 29, bt22: 191, tot_int_add: 200, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:45:28', version: 7641, r_version: 2, bt1: 40, bt2: 250, bt3: 233, bt6: 462, bt7: 527, bt16: 27, bt18: 420, bt19: 489, bt20: 182, bt21: 29, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:50:25', version: 7641, r_version: 2, bt1: 40, bt2: 252, bt3: 233, bt6: 494, bt7: 526, bt16: 28, bt18: 451, bt19: 500, bt20: 183, bt21: 28, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 257, bt1_avg: 44, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '21:55:25', version: 7641, r_version: 2, bt1: 40, bt2: 251, bt3: 233, bt6: 467, bt7: 524, bt16: 27, bt18: 443, bt19: 470, bt20: 183, bt21: 28, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 257, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:00:25', version: 7641, r_version: 2, bt1: 39, bt2: 234, bt3: 235, bt6: 467, bt7: 524, bt16: 27, bt18: 448, bt19: 471, bt20: 183, bt21: 27, bt22: 174, tot_int_add: 200, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 11, prio: 20},
-		{date: '2016-10-30', time: '22:05:26', version: 7641, r_version: 2, bt1: 38, bt2: 255, bt3: 233, bt6: 494, bt7: 521, bt16: 28, bt18: 471, bt19: 521, bt20: 184, bt21: 28, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:10:26', version: 7641, r_version: 2, bt1: 39, bt2: 253, bt3: 234, bt6: 484, bt7: 522, bt16: 25, bt18: 476, bt19: 487, bt20: 184, bt21: 29, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:15:26', version: 7641, r_version: 2, bt1: 39, bt2: 254, bt3: 234, bt6: 475, bt7: 521, bt16: 24, bt18: 473, bt19: 477, bt20: 184, bt21: 28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:20:27', version: 7641, r_version: 2, bt1: 40, bt2: 252, bt3: 234, bt6: 472, bt7: 520, bt16: 20, bt18: 470, bt19: 472, bt20: 183, bt21: 26, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:25:27', version: 7641, r_version: 2, bt1: 40, bt2: 253, bt3: 235, bt6: 473, bt7: 521, bt16: 21, bt18: 466, bt19: 470, bt20: 182, bt21: 26, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:30:27', version: 7641, r_version: 2, bt1: 40, bt2: 254, bt3: 234, bt6: 470, bt7: 519, bt16: 24, bt18: 460, bt19: 470, bt20: 184, bt21: 27, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:35:28', version: 7641, r_version: 2, bt1: 39, bt2: 253, bt3: 234, bt6: 471, bt7: 518, bt16: 19, bt18: 455, bt19: 469, bt20: 184, bt21: 24, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:40:28', version: 7641, r_version: 2, bt1: 40, bt2: 252, bt3: 234, bt6: 475, bt7: 518, bt16: 20, bt18: 451, bt19: 469, bt20: 184, bt21: 23, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:45:28', version: 7641, r_version: 2, bt1: 39, bt2: 252, bt3: 234, bt6: 474, bt7: 517, bt16: 20, bt18: 447, bt19: 468, bt20: 184, bt21: 24, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:50:29', version: 7641, r_version: 2, bt1: 39, bt2: 253, bt3: 234, bt6: 472, bt7: 517, bt16: 22, bt18: 445, bt19: 465, bt20: 184, bt21: 24, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 259, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '22:55:29', version: 7641, r_version: 2, bt1: 38, bt2: 254, bt3: 234, bt6: 473, bt7: 516, bt16: 20, bt18: 443, bt19: 464, bt20: 183, bt21: 22, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:00:29', version: 7641, r_version: 2, bt1: 38, bt2: 236, bt3: 234, bt6: 475, bt7: 516, bt16: 18, bt18: 441, bt19: 464, bt20: 183, bt21: 23, bt22: 183, tot_int_add: 200, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:05:31', version: 7641, r_version: 2, bt1: 38, bt2: 252, bt3: 232, bt6: 492, bt7: 515, bt16: 20, bt18: 455, bt19: 513, bt20: 183, bt21: 25, bt22: 179, tot_int_add: 467, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:10:31', version: 7641, r_version: 2, bt1: 38, bt2: 257, bt3: 233, bt6: 534, bt7: 514, bt16: 20, bt18: 477, bt19: 557, bt20: 183, bt21: 22, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:15:31', version: 7641, r_version: 2, bt1: 38, bt2: 256, bt3: 234, bt6: 516, bt7: 514, bt16: 23, bt18: 471, bt19: 519, bt20: 183, bt21: 25, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:20:35', version: 7641, r_version: 2, bt1: 38, bt2: 255, bt3: 235, bt6: 504, bt7: 513, bt16: 21, bt18: 468, bt19: 505, bt20: 183, bt21: 23, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:25:35', version: 7641, r_version: 2, bt1: 38, bt2: 234, bt3: 234, bt6: 502, bt7: 513, bt16: 21, bt18: 468, bt19: 505, bt20: 182, bt21: 24, bt22: 182, tot_int_add: 200, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:30:35', version: 7641, r_version: 2, bt1: 38, bt2: 253, bt3: 232, bt6: 526, bt7: 513, bt16: 21, bt18: 487, bt19: 555, bt20: 182, bt21: 24, bt22: 182, tot_int_add: 559, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:35:40', version: 7641, r_version: 2, bt1: 37, bt2: 253, bt3: 234, bt6: 528, bt7: 513, bt16: 21, bt18: 491, bt19: 534, bt20: 183, bt21: 25, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:40:40', version: 7641, r_version: 2, bt1: 38, bt2: 252, bt3: 233, bt6: 520, bt7: 512, bt16: 17, bt18: 491, bt19: 521, bt20: 183, bt21: 24, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:45:40', version: 7641, r_version: 2, bt1: 37, bt2: 254, bt3: 234, bt6: 516, bt7: 510, bt16: 21, bt18: 491, bt19: 516, bt20: 183, bt21: 22, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:50:45', version: 7641, r_version: 2, bt1: 37, bt2: 252, bt3: 234, bt6: 513, bt7: 510, bt16: 18, bt18: 490, bt19: 510, bt20: 183, bt21: 22, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 43, relays: 3, prio: 20},
-		{date: '2016-10-30', time: '23:55:44', version: 7641, r_version: 2, bt1: 37, bt2: 253, bt3: 233, bt6: 516, bt7: 510, bt16: 19, bt18: 488, bt19: 509, bt20: 183, bt21: 21, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 258, bt1_avg: 42, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '00:00:44', version: 7641, r_version: 2, bt1: 37, bt2: 254, bt3: 233, bt6: 515, bt7: 509, bt16: 18, bt18: 487, bt19: 510, bt20: 181, bt21: 19, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '00:05:49', version: 7641, r_version: 2, bt1: 37, bt2: 255, bt3: 234, bt6: 517, bt7: 509, bt16: 17, bt18: 484, bt19: 510, bt20: 182, bt21: 23, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '00:10:49', version: 7641, r_version: 2, bt1: 37, bt2: 259, bt3: 234, bt6: 518, bt7: 507, bt16: 17, bt18: 479, bt19: 511, bt20: 179, bt21: 18, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '00:15:49', version: 7641, r_version: 2, bt1: 37, bt2: 260, bt3: 235, bt6: 517, bt7: 508, bt16: 46, bt18: 471, bt19: 510, bt20: 181, bt21: 78, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '00:20:54', version: 7641, r_version: 2, bt1: 37, bt2: 259, bt3: 235, bt6: 509, bt7: 508, bt16: 129, bt18: 453, bt19: 506, bt20: 181, bt21: 121, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '00:25:54', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 234, bt6: 505, bt7: 508, bt16: 146, bt18: 412, bt19: 502, bt20: 181, bt21: 136, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '00:31:02', version: 7641, r_version: 2, bt1: 37, bt2: 253, bt3: 234, bt6: 504, bt7: 507, bt16: 142, bt18: 342, bt19: 497, bt20: 181, bt21: 130, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '00:35:59', version: 7641, r_version: 2, bt1: 37, bt2: 254, bt3: 234, bt6: 503, bt7: 507, bt16: 155, bt18: 276, bt19: 489, bt20: 181, bt21: 134, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '00:40:59', version: 7641, r_version: 2, bt1: 37, bt2: 250, bt3: 234, bt6: 502, bt7: 507, bt16: 12, bt18: 268, bt19: 472, bt20: 181, bt21: 15, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '00:46:07', version: 7641, r_version: 2, bt1: 37, bt2: 254, bt3: 233, bt6: 500, bt7: 508, bt16: 15, bt18: 275, bt19: 440, bt20: 180, bt21: 15, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '00:51:04', version: 7641, r_version: 2, bt1: 37, bt2: 257, bt3: 235, bt6: 499, bt7: 507, bt16: 11, bt18: 273, bt19: 404, bt20: 180, bt21: 12, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '00:56:04', version: 7641, r_version: 2, bt1: 37, bt2: 254, bt3: 235, bt6: 499, bt7: 507, bt16: 10, bt18: 269, bt19: 367, bt20: 182, bt21: 14, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:00:12', version: 7641, r_version: 2, bt1: 37, bt2: 255, bt3: 234, bt6: 499, bt7: 507, bt16: 8, bt18: 267, bt19: 339, bt20: 181, bt21: 13, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:05:09', version: 7641, r_version: 2, bt1: 36, bt2: 257, bt3: 234, bt6: 499, bt7: 506, bt16: 10, bt18: 268, bt19: 323, bt20: 182, bt21: 13, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:10:09', version: 7641, r_version: 2, bt1: 37, bt2: 255, bt3: 234, bt6: 497, bt7: 506, bt16: 9, bt18: 267, bt19: 304, bt20: 179, bt21: 11, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:15:17', version: 7641, r_version: 2, bt1: 37, bt2: 256, bt3: 234, bt6: 496, bt7: 506, bt16: 10, bt18: 268, bt19: 298, bt20: 181, bt21: 12, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:20:14', version: 7641, r_version: 2, bt1: 36, bt2: 253, bt3: 234, bt6: 497, bt7: 506, bt16: 7, bt18: 267, bt19: 293, bt20: 180, bt21: 10, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:25:14', version: 7641, r_version: 2, bt1: 37, bt2: 256, bt3: 234, bt6: 497, bt7: 507, bt16: 6, bt18: 267, bt19: 289, bt20: 181, bt21: 11, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:30:19', version: 7641, r_version: 2, bt1: 37, bt2: 255, bt3: 234, bt6: 496, bt7: 505, bt16: 8, bt18: 267, bt19: 284, bt20: 180, bt21: 9, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 42, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:35:19', version: 7641, r_version: 2, bt1: 36, bt2: 255, bt3: 234, bt6: 495, bt7: 506, bt16: 8, bt18: 267, bt19: 280, bt20: 179, bt21: 11, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 41, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:40:19', version: 7641, r_version: 2, bt1: 36, bt2: 255, bt3: 234, bt6: 495, bt7: 504, bt16: 4, bt18: 266, bt19: 276, bt20: 179, bt21: 10, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 41, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:45:25', version: 7641, r_version: 2, bt1: 35, bt2: 255, bt3: 234, bt6: 493, bt7: 505, bt16: 7, bt18: 265, bt19: 276, bt20: 179, bt21: 6, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 41, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:50:24', version: 7641, r_version: 2, bt1: 35, bt2: 257, bt3: 234, bt6: 493, bt7: 505, bt16: 5, bt18: 267, bt19: 275, bt20: 179, bt21: 9, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 263, bt1_avg: 41, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '01:55:24', version: 7641, r_version: 2, bt1: 35, bt2: 255, bt3: 235, bt6: 492, bt7: 504, bt16: 4, bt18: 265, bt19: 274, bt20: 179, bt21: 8, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '02:01:04', version: 7641, r_version: 2, bt1: 35, bt2: 255, bt3: 234, bt6: 492, bt7: 504, bt16: 4, bt18: 266, bt19: 275, bt20: 180, bt21: 10, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '02:06:01', version: 7641, r_version: 2, bt1: 35, bt2: 268, bt3: 234, bt6: 488, bt7: 504, bt16: 5, bt18: 267, bt19: 323, bt20: 180, bt21: 11, bt22: 185, tot_int_add: 467, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:11:01', version: 7641, r_version: 2, bt1: 35, bt2: 281, bt3: 237, bt6: 488, bt7: 504, bt16: 4, bt18: 277, bt19: 396, bt20: 179, bt21: 8, bt22: 202, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:16:09', version: 7641, r_version: 2, bt1: 34, bt2: 269, bt3: 237, bt6: 488, bt7: 504, bt16: 6, bt18: 296, bt19: 452, bt20: 178, bt21: 6, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:21:06', version: 7641, r_version: 2, bt1: 34, bt2: 269, bt3: 237, bt6: 497, bt7: 504, bt16: 6, bt18: 325, bt19: 510, bt20: 179, bt21: 8, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:26:06', version: 7641, r_version: 2, bt1: 34, bt2: 268, bt3: 236, bt6: 524, bt7: 504, bt16: 4, bt18: 353, bt19: 545, bt20: 177, bt21: 10, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:30:11', version: 7641, r_version: 2, bt1: 32, bt2: 269, bt3: 236, bt6: 541, bt7: 510, bt16: 8, bt18: 372, bt19: 543, bt20: 177, bt21: 9, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:35:11', version: 7641, r_version: 2, bt1: 32, bt2: 259, bt3: 236, bt6: 528, bt7: 512, bt16: 5, bt18: 376, bt19: 528, bt20: 177, bt21: 8, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:40:11', version: 7641, r_version: 2, bt1: 32, bt2: 257, bt3: 236, bt6: 521, bt7: 512, bt16: 5, bt18: 383, bt19: 518, bt20: 178, bt21: 8, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:45:19', version: 7641, r_version: 2, bt1: 32, bt2: 259, bt3: 234, bt6: 517, bt7: 512, bt16: 7, bt18: 385, bt19: 504, bt20: 179, bt21: 10, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:50:16', version: 7641, r_version: 2, bt1: 31, bt2: 253, bt3: 234, bt6: 517, bt7: 511, bt16: 4, bt18: 391, bt19: 509, bt20: 178, bt21: 13, bt22: 175, tot_int_add: 467, alarms: 0, calc_supply: 264, bt1_avg: 41, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '02:55:16', version: 7641, r_version: 2, bt1: 30, bt2: 266, bt3: 234, bt6: 534, bt7: 514, bt16: 8, bt18: 408, bt19: 561, bt20: 179, bt21: 7, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:00:23', version: 7641, r_version: 2, bt1: 30, bt2: 260, bt3: 235, bt6: 535, bt7: 517, bt16: 6, bt18: 412, bt19: 537, bt20: 176, bt21: 10, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:05:20', version: 7641, r_version: 2, bt1: 30, bt2: 257, bt3: 235, bt6: 531, bt7: 517, bt16: 7, bt18: 413, bt19: 529, bt20: 176, bt21: 10, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:10:20', version: 7641, r_version: 2, bt1: 30, bt2: 259, bt3: 235, bt6: 525, bt7: 517, bt16: 6, bt18: 415, bt19: 520, bt20: 176, bt21: 9, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:15:28', version: 7641, r_version: 2, bt1: 30, bt2: 257, bt3: 235, bt6: 525, bt7: 518, bt16: 6, bt18: 409, bt19: 511, bt20: 177, bt21: 10, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:20:25', version: 7641, r_version: 2, bt1: 30, bt2: 256, bt3: 234, bt6: 525, bt7: 517, bt16: 6, bt18: 404, bt19: 504, bt20: 176, bt21: 11, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:25:25', version: 7641, r_version: 2, bt1: 30, bt2: 245, bt3: 235, bt6: 523, bt7: 517, bt16: 8, bt18: 400, bt19: 508, bt20: 176, bt21: 10, bt22: 173, tot_int_add: 200, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:30:30', version: 7641, r_version: 2, bt1: 29, bt2: 263, bt3: 234, bt6: 537, bt7: 518, bt16: 10, bt18: 413, bt19: 564, bt20: 176, bt21: 10, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '03:35:30', version: 7641, r_version: 2, bt1: 29, bt2: 260, bt3: 236, bt6: 538, bt7: 521, bt16: 6, bt18: 417, bt19: 543, bt20: 176, bt21: 7, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '03:40:30', version: 7641, r_version: 2, bt1: 27, bt2: 258, bt3: 234, bt6: 535, bt7: 522, bt16: 4, bt18: 418, bt19: 535, bt20: 176, bt21: 11, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 40, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '03:45:35', version: 7641, r_version: 2, bt1: 27, bt2: 258, bt3: 235, bt6: 534, bt7: 522, bt16: 5, bt18: 418, bt19: 527, bt20: 176, bt21: 9, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 39, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '03:50:35', version: 7641, r_version: 2, bt1: 26, bt2: 256, bt3: 235, bt6: 528, bt7: 521, bt16: 117, bt18: 411, bt19: 517, bt20: 176, bt21: 113, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 39, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '03:55:35', version: 7641, r_version: 2, bt1: 26, bt2: 258, bt3: 234, bt6: 524, bt7: 522, bt16: 131, bt18: 373, bt19: 504, bt20: 178, bt21: 123, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 39, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '04:00:42', version: 7641, r_version: 2, bt1: 24, bt2: 257, bt3: 235, bt6: 522, bt7: 521, bt16: 138, bt18: 302, bt19: 494, bt20: 175, bt21: 125, bt22: 179, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 39, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '04:05:40', version: 7641, r_version: 2, bt1: 23, bt2: 251, bt3: 235, bt6: 521, bt7: 521, bt16: 25, bt18: 262, bt19: 479, bt20: 176, bt21: 18, bt22: 179, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 39, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:10:40', version: 7641, r_version: 2, bt1: 22, bt2: 258, bt3: 234, bt6: 520, bt7: 522, bt16: 0, bt18: 270, bt19: 446, bt20: 178, bt21: 4, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 39, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:15:48', version: 7641, r_version: 2, bt1: 22, bt2: 258, bt3: 234, bt6: 518, bt7: 521, bt16: 3, bt18: 266, bt19: 379, bt20: 177, bt21: 3, bt22: 179, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 39, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:20:45', version: 7641, r_version: 2, bt1: 21, bt2: 257, bt3: 234, bt6: 518, bt7: 521, bt16: 3, bt18: 267, bt19: 326, bt20: 175, bt21: 4, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 38, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:25:44', version: 7641, r_version: 2, bt1: 20, bt2: 259, bt3: 235, bt6: 516, bt7: 521, bt16: 4, bt18: 268, bt19: 299, bt20: 173, bt21: 3, bt22: 179, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 38, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:30:49', version: 7641, r_version: 2, bt1: 19, bt2: 259, bt3: 234, bt6: 516, bt7: 521, bt16: 3, bt18: 268, bt19: 285, bt20: 176, bt21: 5, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 38, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:35:49', version: 7641, r_version: 2, bt1: 18, bt2: 259, bt3: 234, bt6: 514, bt7: 521, bt16: 0, bt18: 267, bt19: 278, bt20: 176, bt21: 2, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 38, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:40:49', version: 7641, r_version: 2, bt1: 16, bt2: 259, bt3: 235, bt6: 514, bt7: 520, bt16: -1, bt18: 267, bt19: 277, bt20: 172, bt21: 6, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 38, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:45:54', version: 7641, r_version: 2, bt1: 14, bt2: 259, bt3: 234, bt6: 513, bt7: 521, bt16: -2, bt18: 268, bt19: 275, bt20: 174, bt21: -1, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 38, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:50:54', version: 7641, r_version: 2, bt1: 13, bt2: 259, bt3: 233, bt6: 513, bt7: 521, bt16: -3, bt18: 268, bt19: 269, bt20: 174, bt21: 3, bt22: 174, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 37, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '04:55:54', version: 7641, r_version: 2, bt1: 12, bt2: 259, bt3: 235, bt6: 509, bt7: 521, bt16: 0, bt18: 266, bt19: 265, bt20: 173, bt21: 5, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 37, relays: 11, prio: 30},
-		{date: '2016-10-31', time: '05:00:59', version: 7641, r_version: 2, bt1: 11, bt2: 259, bt3: 234, bt6: 504, bt7: 521, bt16: 1, bt18: 267, bt19: 262, bt20: 173, bt21: 2, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 37, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:05:59', version: 7641, r_version: 2, bt1: 11, bt2: 259, bt3: 235, bt6: 500, bt7: 520, bt16: 0, bt18: 265, bt19: 260, bt20: 174, bt21: 5, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 37, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:10:59', version: 7641, r_version: 2, bt1: 10, bt2: 259, bt3: 234, bt6: 495, bt7: 521, bt16: 0, bt18: 262, bt19: 260, bt20: 173, bt21: 6, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 36, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:16:03', version: 7641, r_version: 2, bt1: 9, bt2: 259, bt3: 234, bt6: 490, bt7: 521, bt16: -6, bt18: 261, bt19: 259, bt20: 173, bt21: 3, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 36, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:21:03', version: 7641, r_version: 2, bt1: 9, bt2: 258, bt3: 234, bt6: 482, bt7: 521, bt16: -1, bt18: 261, bt19: 259, bt20: 172, bt21: 4, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 36, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:26:03', version: 7641, r_version: 2, bt1: 9, bt2: 257, bt3: 235, bt6: 475, bt7: 520, bt16: -2, bt18: 260, bt19: 258, bt20: 172, bt21: 1, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 36, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:30:08', version: 7641, r_version: 2, bt1: 8, bt2: 256, bt3: 232, bt6: 468, bt7: 520, bt16: -4, bt18: 260, bt19: 259, bt20: 171, bt21: 6, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 35, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:35:08', version: 7641, r_version: 2, bt1: 8, bt2: 255, bt3: 234, bt6: 463, bt7: 521, bt16: -1, bt18: 260, bt19: 257, bt20: 173, bt21: 8, bt22: 173, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 35, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:40:08', version: 7641, r_version: 2, bt1: 6, bt2: 255, bt3: 234, bt6: 455, bt7: 521, bt16: -2, bt18: 260, bt19: 258, bt20: 170, bt21: 6, bt22: 173, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 35, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '05:45:13', version: 7641, r_version: 2, bt1: 6, bt2: 259, bt3: 234, bt6: 446, bt7: 521, bt16: -1, bt18: 260, bt19: 261, bt20: 170, bt21: 6, bt22: 173, tot_int_add: 200, alarms: 0, calc_supply: 271, bt1_avg: 35, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '05:50:13', version: 7641, r_version: 2, bt1: 4, bt2: 283, bt3: 235, bt6: 447, bt7: 520, bt16: 1, bt18: 269, bt19: 302, bt20: 172, bt21: 0, bt22: 184, tot_int_add: 559, alarms: 0, calc_supply: 271, bt1_avg: 34, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '05:55:13', version: 7641, r_version: 2, bt1: 2, bt2: 293, bt3: 237, bt6: 450, bt7: 520, bt16: -1, bt18: 276, bt19: 330, bt20: 170, bt21: 1, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 271, bt1_avg: 34, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '06:00:18', version: 7641, r_version: 2, bt1: 1, bt2: 292, bt3: 241, bt6: 449, bt7: 521, bt16: 0, bt18: 278, bt19: 354, bt20: 168, bt21: 0, bt22: 197, tot_int_add: 559, alarms: 0, calc_supply: 272, bt1_avg: 34, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '06:05:18', version: 7641, r_version: 2, bt1: 0, bt2: 288, bt3: 241, bt6: 452, bt7: 520, bt16: -2, bt18: 282, bt19: 392, bt20: 167, bt21: 1, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 271, bt1_avg: 33, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '06:10:18', version: 7641, r_version: 2, bt1: -1, bt2: 281, bt3: 241, bt6: 457, bt7: 520, bt16: -2, bt18: 296, bt19: 435, bt20: 168, bt21: -2, bt22: 191, tot_int_add: 559, alarms: 0, calc_supply: 271, bt1_avg: 33, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '06:15:23', version: 7641, r_version: 2, bt1: -3, bt2: 280, bt3: 241, bt6: 476, bt7: 520, bt16: -1, bt18: 315, bt19: 480, bt20: 168, bt21: 0, bt22: 186, tot_int_add: 559, alarms: 0, calc_supply: 271, bt1_avg: 33, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '06:20:23', version: 7641, r_version: 2, bt1: -3, bt2: 276, bt3: 240, bt6: 505, bt7: 520, bt16: -2, bt18: 333, bt19: 519, bt20: 167, bt21: -1, bt22: 185, tot_int_add: 559, alarms: 0, calc_supply: 272, bt1_avg: 32, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '06:25:23', version: 7641, r_version: 2, bt1: -4, bt2: 261, bt3: 240, bt6: 508, bt7: 519, bt16: -4, bt18: 344, bt19: 498, bt20: 168, bt21: -4, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 32, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '06:30:28', version: 7641, r_version: 2, bt1: -5, bt2: 265, bt3: 236, bt6: 496, bt7: 519, bt16: -5, bt18: 347, bt19: 482, bt20: 168, bt21: -6, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 32, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '06:35:28', version: 7641, r_version: 2, bt1: -6, bt2: 263, bt3: 237, bt6: 491, bt7: 519, bt16: -3, bt18: 333, bt19: 462, bt20: 167, bt21: -3, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 31, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '06:40:27', version: 7641, r_version: 2, bt1: -6, bt2: 263, bt3: 237, bt6: 488, bt7: 520, bt16: 104, bt18: 289, bt19: 443, bt20: 169, bt21: 100, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 31, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '06:45:32', version: 7641, r_version: 2, bt1: -6, bt2: 249, bt3: 235, bt6: 484, bt7: 518, bt16: 126, bt18: 248, bt19: 399, bt20: 167, bt21: 118, bt22: 167, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 31, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '06:50:32', version: 7641, r_version: 2, bt1: -7, bt2: 251, bt3: 234, bt6: 482, bt7: 519, bt16: 131, bt18: 249, bt19: 270, bt20: 166, bt21: 119, bt22: 166, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 30, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '06:55:32', version: 7641, r_version: 2, bt1: -8, bt2: 259, bt3: 234, bt6: 480, bt7: 519, bt16: -3, bt18: 261, bt19: 259, bt20: 168, bt21: 1, bt22: 168, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 30, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '07:00:37', version: 7641, r_version: 2, bt1: -8, bt2: 259, bt3: 234, bt6: 472, bt7: 518, bt16: 1, bt18: 263, bt19: 259, bt20: 167, bt21: -2, bt22: 170, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 30, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '07:05:37', version: 7641, r_version: 2, bt1: -8, bt2: 259, bt3: 235, bt6: 465, bt7: 517, bt16: -4, bt18: 263, bt19: 260, bt20: 168, bt21: -3, bt22: 171, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 29, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '07:10:37', version: 7641, r_version: 2, bt1: -8, bt2: 259, bt3: 235, bt6: 462, bt7: 518, bt16: 0, bt18: 262, bt19: 259, bt20: 169, bt21: -1, bt22: 171, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 29, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '07:15:42', version: 7641, r_version: 2, bt1: -8, bt2: 259, bt3: 235, bt6: 455, bt7: 518, bt16: -2, bt18: 261, bt19: 259, bt20: 167, bt21: 1, bt22: 171, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 29, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '07:20:42', version: 7641, r_version: 2, bt1: -8, bt2: 259, bt3: 235, bt6: 451, bt7: 518, bt16: -3, bt18: 261, bt19: 259, bt20: 167, bt21: -1, bt22: 171, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 28, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '07:25:42', version: 7641, r_version: 2, bt1: -9, bt2: 276, bt3: 235, bt6: 447, bt7: 518, bt16: -1, bt18: 266, bt19: 285, bt20: 168, bt21: 0, bt22: 174, tot_int_add: 467, alarms: 0, calc_supply: 275, bt1_avg: 28, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '07:30:47', version: 7641, r_version: 2, bt1: -10, bt2: 293, bt3: 236, bt6: 448, bt7: 518, bt16: -4, bt18: 276, bt19: 321, bt20: 166, bt21: -2, bt22: 191, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 28, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '07:35:47', version: 7641, r_version: 2, bt1: -10, bt2: 296, bt3: 240, bt6: 448, bt7: 518, bt16: -5, bt18: 279, bt19: 339, bt20: 166, bt21: -4, bt22: 196, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 27, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '07:40:47', version: 7641, r_version: 2, bt1: -10, bt2: 294, bt3: 243, bt6: 447, bt7: 516, bt16: -6, bt18: 278, bt19: 375, bt20: 166, bt21: -2, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 27, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '07:45:51', version: 7641, r_version: 2, bt1: -10, bt2: 287, bt3: 241, bt6: 442, bt7: 517, bt16: -3, bt18: 286, bt19: 410, bt20: 167, bt21: -1, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 26, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '07:50:51', version: 7641, r_version: 2, bt1: -11, bt2: 283, bt3: 242, bt6: 440, bt7: 517, bt16: 0, bt18: 297, bt19: 439, bt20: 167, bt21: -3, bt22: 192, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 26, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '07:55:51', version: 7641, r_version: 2, bt1: -11, bt2: 285, bt3: 242, bt6: 463, bt7: 517, bt16: -3, bt18: 313, bt19: 469, bt20: 168, bt21: 0, bt22: 191, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 26, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:00:56', version: 7641, r_version: 2, bt1: -10, bt2: 284, bt3: 242, bt6: 486, bt7: 517, bt16: -2, bt18: 323, bt19: 493, bt20: 168, bt21: 4, bt22: 192, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:05:56', version: 7641, r_version: 2, bt1: -11, bt2: 283, bt3: 242, bt6: 507, bt7: 516, bt16: 1, bt18: 335, bt19: 517, bt20: 167, bt21: 2, bt22: 189, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:10:56', version: 7641, r_version: 2, bt1: -10, bt2: 282, bt3: 241, bt6: 521, bt7: 517, bt16: 1, bt18: 343, bt19: 533, bt20: 169, bt21: 5, bt22: 192, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:16:01', version: 7641, r_version: 2, bt1: -12, bt2: 284, bt3: 242, bt6: 535, bt7: 518, bt16: 5, bt18: 353, bt19: 549, bt20: 167, bt21: 4, bt22: 191, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:21:01', version: 7641, r_version: 2, bt1: -12, bt2: 279, bt3: 243, bt6: 544, bt7: 520, bt16: 0, bt18: 360, bt19: 555, bt20: 167, bt21: 1, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 276, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:26:01', version: 7641, r_version: 2, bt1: -12, bt2: 267, bt3: 241, bt6: 527, bt7: 521, bt16: 2, bt18: 362, bt19: 522, bt20: 168, bt21: 4, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 276, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:31:00', version: 7641, r_version: 2, bt1: -12, bt2: 253, bt3: 240, bt6: 511, bt7: 521, bt16: 4, bt18: 364, bt19: 482, bt20: 167, bt21: 4, bt22: 167, tot_int_add: 200, alarms: 0, calc_supply: 276, bt1_avg: 23, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:36:00', version: 7641, r_version: 2, bt1: -12, bt2: 275, bt3: 239, bt6: 504, bt7: 521, bt16: 3, bt18: 375, bt19: 516, bt20: 167, bt21: 5, bt22: 180, tot_int_add: 559, alarms: 0, calc_supply: 277, bt1_avg: 23, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:41:00', version: 7641, r_version: 2, bt1: -11, bt2: 280, bt3: 241, bt6: 532, bt7: 521, bt16: 1, bt18: 383, bt19: 555, bt20: 167, bt21: 1, bt22: 186, tot_int_add: 559, alarms: 0, calc_supply: 277, bt1_avg: 23, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:46:01', version: 7641, r_version: 2, bt1: -10, bt2: 275, bt3: 243, bt6: 538, bt7: 525, bt16: 2, bt18: 379, bt19: 537, bt20: 167, bt21: 3, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 277, bt1_avg: 22, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:51:01', version: 7641, r_version: 2, bt1: -10, bt2: 269, bt3: 241, bt6: 527, bt7: 526, bt16: -2, bt18: 375, bt19: 523, bt20: 167, bt21: 6, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 277, bt1_avg: 22, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '08:56:01', version: 7641, r_version: 2, bt1: -8, bt2: 269, bt3: 242, bt6: 521, bt7: 525, bt16: 5, bt18: 360, bt19: 504, bt20: 168, bt21: 6, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 277, bt1_avg: 22, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:00:06', version: 7641, r_version: 2, bt1: -8, bt2: 273, bt3: 238, bt6: 514, bt7: 525, bt16: 4, bt18: 353, bt19: 487, bt20: 168, bt21: 8, bt22: 175, tot_int_add: 467, alarms: 0, calc_supply: 277, bt1_avg: 22, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:05:06', version: 7641, r_version: 2, bt1: -6, bt2: 279, bt3: 237, bt6: 522, bt7: 525, bt16: 4, bt18: 361, bt19: 537, bt20: 169, bt21: 7, bt22: 187, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 21, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:10:06', version: 7641, r_version: 2, bt1: -5, bt2: 282, bt3: 240, bt6: 544, bt7: 526, bt16: 5, bt18: 370, bt19: 558, bt20: 172, bt21: 5, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 276, bt1_avg: 21, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:15:11', version: 7641, r_version: 2, bt1: -5, bt2: 267, bt3: 241, bt6: 538, bt7: 529, bt16: 7, bt18: 369, bt19: 529, bt20: 170, bt21: 6, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 276, bt1_avg: 21, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:20:11', version: 7641, r_version: 2, bt1: -5, bt2: 256, bt3: 239, bt6: 522, bt7: 528, bt16: 1, bt18: 370, bt19: 494, bt20: 171, bt21: 8, bt22: 172, tot_int_add: 200, alarms: 0, calc_supply: 276, bt1_avg: 21, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:25:11', version: 7641, r_version: 2, bt1: -3, bt2: 274, bt3: 239, bt6: 521, bt7: 528, bt16: 1, bt18: 382, bt19: 533, bt20: 171, bt21: 6, bt22: 183, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:30:16', version: 7641, r_version: 2, bt1: -2, bt2: 276, bt3: 241, bt6: 545, bt7: 529, bt16: 4, bt18: 391, bt19: 547, bt20: 172, bt21: 9, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 276, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:35:16', version: 7641, r_version: 2, bt1: -1, bt2: 266, bt3: 242, bt6: 534, bt7: 530, bt16: 4, bt18: 387, bt19: 526, bt20: 173, bt21: 2, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 276, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:40:16', version: 7641, r_version: 2, bt1: 1, bt2: 268, bt3: 241, bt6: 525, bt7: 531, bt16: 4, bt18: 384, bt19: 515, bt20: 171, bt21: 5, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 275, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:45:21', version: 7641, r_version: 2, bt1: 2, bt2: 257, bt3: 240, bt6: 521, bt7: 530, bt16: 0, bt18: 372, bt19: 499, bt20: 170, bt21: 3, bt22: 183, tot_int_add: 200, alarms: 0, calc_supply: 275, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:50:21', version: 7641, r_version: 2, bt1: 4, bt2: 272, bt3: 237, bt6: 519, bt7: 530, bt16: 4, bt18: 372, bt19: 517, bt20: 170, bt21: 5, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 275, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '09:55:21', version: 7641, r_version: 2, bt1: 5, bt2: 276, bt3: 240, bt6: 543, bt7: 530, bt16: 3, bt18: 386, bt19: 562, bt20: 171, bt21: 8, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 275, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '10:00:26', version: 7641, r_version: 2, bt1: 7, bt2: 269, bt3: 242, bt6: 545, bt7: 534, bt16: 3, bt18: 386, bt19: 546, bt20: 171, bt21: 3, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 19, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '10:05:26', version: 7641, r_version: 2, bt1: 8, bt2: 265, bt3: 242, bt6: 538, bt7: 534, bt16: 0, bt18: 386, bt19: 530, bt20: 170, bt21: 5, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 19, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '10:10:26', version: 7641, r_version: 2, bt1: 9, bt2: 266, bt3: 241, bt6: 531, bt7: 533, bt16: 4, bt18: 383, bt19: 512, bt20: 172, bt21: 4, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 19, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '10:15:31', version: 7641, r_version: 2, bt1: 11, bt2: 267, bt3: 239, bt6: 528, bt7: 534, bt16: 115, bt18: 361, bt19: 499, bt20: 172, bt21: 109, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 19, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '10:20:31', version: 7641, r_version: 2, bt1: 13, bt2: 262, bt3: 239, bt6: 526, bt7: 534, bt16: 129, bt18: 297, bt19: 482, bt20: 173, bt21: 120, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 19, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '10:25:31', version: 7641, r_version: 2, bt1: 13, bt2: 251, bt3: 240, bt6: 524, bt7: 533, bt16: 145, bt18: 246, bt19: 462, bt20: 173, bt21: 120, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 19, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '10:30:36', version: 7641, r_version: 2, bt1: 14, bt2: 259, bt3: 238, bt6: 522, bt7: 533, bt16: 2, bt18: 260, bt19: 362, bt20: 173, bt21: 8, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '10:35:36', version: 7641, r_version: 2, bt1: 16, bt2: 265, bt3: 239, bt6: 521, bt7: 533, bt16: 3, bt18: 268, bt19: 289, bt20: 174, bt21: 4, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '10:40:35', version: 7641, r_version: 2, bt1: 16, bt2: 263, bt3: 239, bt6: 521, bt7: 532, bt16: 5, bt18: 272, bt19: 282, bt20: 173, bt21: 9, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '10:45:40', version: 7641, r_version: 2, bt1: 18, bt2: 263, bt3: 239, bt6: 519, bt7: 531, bt16: 3, bt18: 274, bt19: 277, bt20: 172, bt21: 8, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '10:50:40', version: 7641, r_version: 2, bt1: 18, bt2: 263, bt3: 239, bt6: 511, bt7: 532, bt16: 4, bt18: 271, bt19: 269, bt20: 174, bt21: 8, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '10:55:40', version: 7641, r_version: 2, bt1: 19, bt2: 263, bt3: 240, bt6: 503, bt7: 532, bt16: 3, bt18: 269, bt19: 266, bt20: 173, bt21: 6, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '11:00:45', version: 7641, r_version: 2, bt1: 19, bt2: 261, bt3: 239, bt6: 493, bt7: 531, bt16: 3, bt18: 268, bt19: 265, bt20: 175, bt21: 8, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 19, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '11:05:45', version: 7641, r_version: 2, bt1: 21, bt2: 269, bt3: 239, bt6: 487, bt7: 532, bt16: 3, bt18: 269, bt19: 278, bt20: 174, bt21: 5, bt22: 186, tot_int_add: 200, alarms: 0, calc_supply: 271, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:10:45', version: 7641, r_version: 2, bt1: 21, bt2: 291, bt3: 241, bt6: 486, bt7: 531, bt16: 1, bt18: 276, bt19: 331, bt20: 174, bt21: 4, bt22: 201, tot_int_add: 559, alarms: 0, calc_supply: 271, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:15:50', version: 7641, r_version: 2, bt1: 22, bt2: 292, bt3: 244, bt6: 485, bt7: 531, bt16: 5, bt18: 279, bt19: 378, bt20: 176, bt21: 8, bt22: 209, tot_int_add: 559, alarms: 0, calc_supply: 269, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:20:50', version: 7641, r_version: 2, bt1: 22, bt2: 284, bt3: 244, bt6: 485, bt7: 531, bt16: 6, bt18: 293, bt19: 423, bt20: 172, bt21: 4, bt22: 206, tot_int_add: 559, alarms: 0, calc_supply: 269, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:25:50', version: 7641, r_version: 2, bt1: 24, bt2: 277, bt3: 243, bt6: 492, bt7: 531, bt16: 2, bt18: 317, bt19: 479, bt20: 173, bt21: 3, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 269, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:30:55', version: 7641, r_version: 2, bt1: 24, bt2: 277, bt3: 241, bt6: 517, bt7: 530, bt16: 5, bt18: 340, bt19: 526, bt20: 173, bt21: 6, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 269, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:35:55', version: 7641, r_version: 2, bt1: 26, bt2: 277, bt3: 243, bt6: 539, bt7: 531, bt16: 1, bt18: 366, bt19: 560, bt20: 177, bt21: 9, bt22: 195, tot_int_add: 467, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:40:55', version: 7641, r_version: 2, bt1: 26, bt2: 267, bt3: 242, bt6: 539, bt7: 533, bt16: 4, bt18: 377, bt19: 534, bt20: 175, bt21: 6, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:46:00', version: 7641, r_version: 2, bt1: 26, bt2: 260, bt3: 241, bt6: 528, bt7: 532, bt16: 6, bt18: 384, bt19: 521, bt20: 174, bt21: 8, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:51:00', version: 7641, r_version: 2, bt1: 27, bt2: 261, bt3: 240, bt6: 523, bt7: 533, bt16: 3, bt18: 391, bt19: 510, bt20: 175, bt21: 9, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '11:56:00', version: 7641, r_version: 2, bt1: 28, bt2: 242, bt3: 240, bt6: 521, bt7: 532, bt16: 4, bt18: 392, bt19: 500, bt20: 176, bt21: 5, bt22: 189, tot_int_add: 200, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '12:00:05', version: 7641, r_version: 2, bt1: 29, bt2: 263, bt3: 239, bt6: 531, bt7: 531, bt16: 6, bt18: 403, bt19: 543, bt20: 174, bt21: 8, bt22: 189, tot_int_add: 559, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '12:05:05', version: 7641, r_version: 2, bt1: 29, bt2: 267, bt3: 241, bt6: 551, bt7: 534, bt16: 5, bt18: 420, bt19: 548, bt20: 176, bt21: 10, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '12:10:05', version: 7641, r_version: 2, bt1: 29, bt2: 260, bt3: 242, bt6: 542, bt7: 536, bt16: 8, bt18: 422, bt19: 542, bt20: 176, bt21: 7, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 19, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '12:15:10', version: 7641, r_version: 2, bt1: 30, bt2: 260, bt3: 240, bt6: 538, bt7: 536, bt16: 4, bt18: 423, bt19: 535, bt20: 176, bt21: 8, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 19, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '12:20:10', version: 7641, r_version: 2, bt1: 30, bt2: 260, bt3: 239, bt6: 537, bt7: 535, bt16: 96, bt18: 426, bt19: 525, bt20: 175, bt21: 108, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 20, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '12:25:10', version: 7641, r_version: 2, bt1: 30, bt2: 259, bt3: 238, bt6: 533, bt7: 536, bt16: 126, bt18: 412, bt19: 514, bt20: 175, bt21: 117, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 20, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '12:30:14', version: 7641, r_version: 2, bt1: 31, bt2: 258, bt3: 239, bt6: 529, bt7: 535, bt16: 139, bt18: 367, bt19: 503, bt20: 177, bt21: 127, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 20, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '12:35:14', version: 7641, r_version: 2, bt1: 32, bt2: 259, bt3: 240, bt6: 527, bt7: 534, bt16: 142, bt18: 305, bt19: 496, bt20: 178, bt21: 123, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 20, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '12:40:14', version: 7641, r_version: 2, bt1: 32, bt2: 253, bt3: 238, bt6: 526, bt7: 535, bt16: 63, bt18: 262, bt19: 483, bt20: 177, bt21: 50, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 20, relays: 11, prio: 30},
-		{date: '2016-10-31', time: '12:45:19', version: 7641, r_version: 2, bt1: 33, bt2: 257, bt3: 238, bt6: 525, bt7: 534, bt16: 5, bt18: 277, bt19: 459, bt20: 178, bt21: 8, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 20, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '12:50:19', version: 7641, r_version: 2, bt1: 34, bt2: 257, bt3: 237, bt6: 524, bt7: 534, bt16: 5, bt18: 283, bt19: 424, bt20: 178, bt21: 4, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 20, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '12:55:19', version: 7641, r_version: 2, bt1: 34, bt2: 258, bt3: 239, bt6: 524, bt7: 534, bt16: 7, bt18: 284, bt19: 401, bt20: 177, bt21: 6, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 20, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:00:24', version: 7641, r_version: 2, bt1: 35, bt2: 258, bt3: 238, bt6: 521, bt7: 534, bt16: 5, bt18: 285, bt19: 386, bt20: 179, bt21: 7, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 20, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:05:24', version: 7641, r_version: 2, bt1: 35, bt2: 259, bt3: 238, bt6: 520, bt7: 534, bt16: 6, bt18: 286, bt19: 376, bt20: 178, bt21: 7, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:10:24', version: 7641, r_version: 2, bt1: 35, bt2: 259, bt3: 239, bt6: 518, bt7: 534, bt16: 5, bt18: 285, bt19: 368, bt20: 180, bt21: 9, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:15:29', version: 7641, r_version: 2, bt1: 36, bt2: 258, bt3: 238, bt6: 517, bt7: 534, bt16: 11, bt18: 284, bt19: 363, bt20: 179, bt21: 7, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:20:29', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 240, bt6: 517, bt7: 533, bt16: 8, bt18: 284, bt19: 360, bt20: 179, bt21: 8, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:25:29', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 239, bt6: 516, bt7: 534, bt16: 8, bt18: 283, bt19: 357, bt20: 179, bt21: 10, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:30:34', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 237, bt6: 514, bt7: 533, bt16: 8, bt18: 283, bt19: 356, bt20: 179, bt21: 10, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:35:34', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 238, bt6: 513, bt7: 533, bt16: 12, bt18: 283, bt19: 354, bt20: 178, bt21: 10, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:40:34', version: 7641, r_version: 2, bt1: 37, bt2: 256, bt3: 237, bt6: 514, bt7: 533, bt16: 8, bt18: 284, bt19: 355, bt20: 177, bt21: 13, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:45:39', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 239, bt6: 512, bt7: 533, bt16: 8, bt18: 283, bt19: 353, bt20: 178, bt21: 10, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:50:39', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 237, bt6: 512, bt7: 532, bt16: 9, bt18: 284, bt19: 353, bt20: 178, bt21: 8, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '13:55:39', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 237, bt6: 511, bt7: 532, bt16: 8, bt18: 283, bt19: 353, bt20: 178, bt21: 11, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:00:44', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 238, bt6: 512, bt7: 532, bt16: 4, bt18: 281, bt19: 353, bt20: 179, bt21: 11, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:05:44', version: 7641, r_version: 2, bt1: 37, bt2: 257, bt3: 239, bt6: 509, bt7: 531, bt16: 9, bt18: 282, bt19: 352, bt20: 178, bt21: 10, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:10:44', version: 7641, r_version: 2, bt1: 37, bt2: 257, bt3: 236, bt6: 509, bt7: 532, bt16: 6, bt18: 283, bt19: 353, bt20: 177, bt21: 10, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:15:49', version: 7641, r_version: 2, bt1: 37, bt2: 256, bt3: 236, bt6: 508, bt7: 532, bt16: 7, bt18: 283, bt19: 352, bt20: 178, bt21: 9, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:20:49', version: 7641, r_version: 2, bt1: 37, bt2: 257, bt3: 236, bt6: 508, bt7: 532, bt16: 5, bt18: 282, bt19: 353, bt20: 179, bt21: 9, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:25:49', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 237, bt6: 506, bt7: 531, bt16: 7, bt18: 283, bt19: 351, bt20: 178, bt21: 10, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:30:55', version: 7641, r_version: 2, bt1: 37, bt2: 258, bt3: 237, bt6: 506, bt7: 532, bt16: 6, bt18: 279, bt19: 349, bt20: 179, bt21: 7, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:35:55', version: 7641, r_version: 2, bt1: 36, bt2: 258, bt3: 236, bt6: 507, bt7: 531, bt16: 7, bt18: 279, bt19: 346, bt20: 177, bt21: 7, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:40:55', version: 7641, r_version: 2, bt1: 36, bt2: 256, bt3: 236, bt6: 504, bt7: 531, bt16: 7, bt18: 277, bt19: 346, bt20: 180, bt21: 9, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:46:00', version: 7641, r_version: 2, bt1: 35, bt2: 256, bt3: 237, bt6: 504, bt7: 531, bt16: 7, bt18: 278, bt19: 343, bt20: 179, bt21: 9, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '14:51:00', version: 7641, r_version: 2, bt1: 35, bt2: 254, bt3: 236, bt6: 504, bt7: 530, bt16: 5, bt18: 278, bt19: 344, bt20: 177, bt21: 10, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 23, relays: 11, prio: 30},
-		{date: '2016-10-31', time: '14:56:00', version: 7641, r_version: 2, bt1: 35, bt2: 257, bt3: 237, bt6: 503, bt7: 530, bt16: 8, bt18: 275, bt19: 342, bt20: 178, bt21: 10, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '15:00:05', version: 7641, r_version: 2, bt1: 35, bt2: 256, bt3: 236, bt6: 503, bt7: 531, bt16: 6, bt18: 276, bt19: 339, bt20: 178, bt21: 8, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '15:05:05', version: 7641, r_version: 2, bt1: 35, bt2: 258, bt3: 237, bt6: 502, bt7: 530, bt16: 5, bt18: 276, bt19: 338, bt20: 176, bt21: 7, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '15:10:05', version: 7641, r_version: 2, bt1: 35, bt2: 257, bt3: 238, bt6: 497, bt7: 530, bt16: 4, bt18: 274, bt19: 330, bt20: 176, bt21: 7, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '15:15:10', version: 7641, r_version: 2, bt1: 34, bt2: 256, bt3: 238, bt6: 486, bt7: 529, bt16: 9, bt18: 276, bt19: 345, bt20: 176, bt21: 6, bt22: 183, tot_int_add: 200, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:20:10', version: 7641, r_version: 2, bt1: 34, bt2: 276, bt3: 239, bt6: 479, bt7: 529, bt16: 6, bt18: 292, bt19: 415, bt20: 178, bt21: 5, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:25:10', version: 7641, r_version: 2, bt1: 34, bt2: 270, bt3: 241, bt6: 488, bt7: 530, bt16: 6, bt18: 315, bt19: 482, bt20: 176, bt21: 8, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:30:15', version: 7641, r_version: 2, bt1: 34, bt2: 272, bt3: 239, bt6: 519, bt7: 531, bt16: 4, bt18: 344, bt19: 535, bt20: 175, bt21: 10, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:35:15', version: 7641, r_version: 2, bt1: 32, bt2: 270, bt3: 240, bt6: 545, bt7: 530, bt16: 8, bt18: 372, bt19: 548, bt20: 178, bt21: 8, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:40:15', version: 7641, r_version: 2, bt1: 32, bt2: 260, bt3: 239, bt6: 532, bt7: 532, bt16: 10, bt18: 379, bt19: 527, bt20: 177, bt21: 12, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:45:20', version: 7641, r_version: 2, bt1: 30, bt2: 257, bt3: 239, bt6: 523, bt7: 531, bt16: 11, bt18: 386, bt19: 517, bt20: 176, bt21: 10, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:50:20', version: 7641, r_version: 2, bt1: 29, bt2: 257, bt3: 237, bt6: 520, bt7: 530, bt16: 9, bt18: 392, bt19: 504, bt20: 176, bt21: 10, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 264, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '15:55:20', version: 7641, r_version: 2, bt1: 28, bt2: 250, bt3: 237, bt6: 518, bt7: 531, bt16: 10, bt18: 400, bt19: 511, bt20: 174, bt21: 12, bt22: 170, tot_int_add: 467, alarms: 0, calc_supply: 265, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:00:25', version: 7641, r_version: 2, bt1: 26, bt2: 259, bt3: 236, bt6: 545, bt7: 531, bt16: 9, bt18: 430, bt19: 560, bt20: 175, bt21: 12, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:05:25', version: 7641, r_version: 2, bt1: 23, bt2: 259, bt3: 235, bt6: 545, bt7: 533, bt16: 12, bt18: 435, bt19: 543, bt20: 175, bt21: 11, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:10:25', version: 7641, r_version: 2, bt1: 21, bt2: 258, bt3: 238, bt6: 540, bt7: 534, bt16: 8, bt18: 439, bt19: 538, bt20: 176, bt21: 10, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 265, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:15:26', version: 7641, r_version: 2, bt1: 19, bt2: 258, bt3: 237, bt6: 539, bt7: 533, bt16: 8, bt18: 442, bt19: 531, bt20: 176, bt21: 10, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 25, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:20:26', version: 7641, r_version: 2, bt1: 18, bt2: 259, bt3: 236, bt6: 538, bt7: 534, bt16: 10, bt18: 443, bt19: 525, bt20: 175, bt21: 12, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:25:26', version: 7641, r_version: 2, bt1: 16, bt2: 260, bt3: 236, bt6: 537, bt7: 533, bt16: 8, bt18: 440, bt19: 520, bt20: 173, bt21: 6, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 266, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:30:26', version: 7641, r_version: 2, bt1: 14, bt2: 259, bt3: 235, bt6: 538, bt7: 533, bt16: 6, bt18: 431, bt19: 516, bt20: 174, bt21: 8, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:35:26', version: 7641, r_version: 2, bt1: 13, bt2: 259, bt3: 235, bt6: 537, bt7: 533, bt16: 5, bt18: 423, bt19: 512, bt20: 174, bt21: 10, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 267, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:40:26', version: 7641, r_version: 2, bt1: 11, bt2: 259, bt3: 235, bt6: 536, bt7: 533, bt16: 3, bt18: 416, bt19: 508, bt20: 173, bt21: 10, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:45:31', version: 7641, r_version: 2, bt1: 9, bt2: 238, bt3: 237, bt6: 530, bt7: 532, bt16: 4, bt18: 408, bt19: 500, bt20: 173, bt21: 4, bt22: 175, tot_int_add: 200, alarms: 0, calc_supply: 268, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:50:31', version: 7641, r_version: 2, bt1: 8, bt2: 262, bt3: 236, bt6: 537, bt7: 532, bt16: 5, bt18: 414, bt19: 551, bt20: 173, bt21: 10, bt22: 175, tot_int_add: 559, alarms: 0, calc_supply: 268, bt1_avg: 24, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '16:55:31', version: 7641, r_version: 2, bt1: 6, bt2: 262, bt3: 236, bt6: 549, bt7: 535, bt16: 8, bt18: 423, bt19: 547, bt20: 173, bt21: 6, bt22: 176, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 24, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '17:00:30', version: 7641, r_version: 2, bt1: 4, bt2: 259, bt3: 236, bt6: 543, bt7: 534, bt16: 5, bt18: 423, bt19: 543, bt20: 174, bt21: 7, bt22: 174, tot_int_add: 0, alarms: 0, calc_supply: 268, bt1_avg: 23, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '17:05:30', version: 7641, r_version: 2, bt1: 2, bt2: 261, bt3: 237, bt6: 538, bt7: 536, bt16: 6, bt18: 423, bt19: 521, bt20: 172, bt21: 7, bt22: 173, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 23, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '17:10:30', version: 7641, r_version: 2, bt1: 1, bt2: 260, bt3: 236, bt6: 531, bt7: 535, bt16: 106, bt18: 417, bt19: 499, bt20: 172, bt21: 107, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 269, bt1_avg: 23, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '17:15:28', version: 7641, r_version: 2, bt1: -1, bt2: 266, bt3: 236, bt6: 527, bt7: 534, bt16: 126, bt18: 383, bt19: 486, bt20: 171, bt21: 118, bt22: 174, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 23, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '17:20:28', version: 7641, r_version: 2, bt1: -2, bt2: 260, bt3: 236, bt6: 526, bt7: 534, bt16: 136, bt18: 298, bt19: 476, bt20: 171, bt21: 122, bt22: 174, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 23, relays: 2, prio: 30},
-		{date: '2016-10-31', time: '17:25:28', version: 7641, r_version: 2, bt1: -3, bt2: 254, bt3: 237, bt6: 524, bt7: 534, bt16: 5, bt18: 264, bt19: 459, bt20: 169, bt21: 4, bt22: 171, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '17:30:33', version: 7641, r_version: 2, bt1: -5, bt2: 260, bt3: 235, bt6: 521, bt7: 534, bt16: 2, bt18: 268, bt19: 403, bt20: 169, bt21: 6, bt22: 167, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '17:35:33', version: 7641, r_version: 2, bt1: -6, bt2: 263, bt3: 237, bt6: 519, bt7: 535, bt16: 0, bt18: 267, bt19: 304, bt20: 171, bt21: 6, bt22: 172, tot_int_add: 0, alarms: 0, calc_supply: 271, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '17:40:33', version: 7641, r_version: 2, bt1: -8, bt2: 263, bt3: 236, bt6: 517, bt7: 534, bt16: 2, bt18: 270, bt19: 277, bt20: 169, bt21: 0, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 22, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '17:45:33', version: 7641, r_version: 2, bt1: -10, bt2: 261, bt3: 236, bt6: 513, bt7: 534, bt16: -2, bt18: 269, bt19: 268, bt20: 169, bt21: 2, bt22: 172, tot_int_add: 0, alarms: 0, calc_supply: 272, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '17:50:33', version: 7641, r_version: 2, bt1: -10, bt2: 261, bt3: 236, bt6: 508, bt7: 534, bt16: 0, bt18: 268, bt19: 265, bt20: 167, bt21: 4, bt22: 172, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '17:55:33', version: 7641, r_version: 2, bt1: -12, bt2: 260, bt3: 236, bt6: 501, bt7: 533, bt16: -1, bt18: 267, bt19: 262, bt20: 169, bt21: 0, bt22: 169, tot_int_add: 0, alarms: 0, calc_supply: 273, bt1_avg: 21, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '18:00:32', version: 7641, r_version: 2, bt1: -13, bt2: 260, bt3: 236, bt6: 494, bt7: 534, bt16: -1, bt18: 266, bt19: 261, bt20: 168, bt21: 5, bt22: 168, tot_int_add: 0, alarms: 0, calc_supply: 274, bt1_avg: 20, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '18:05:32', version: 7641, r_version: 2, bt1: -15, bt2: 262, bt3: 235, bt6: 487, bt7: 533, bt16: -1, bt18: 264, bt19: 267, bt20: 168, bt21: 0, bt22: 167, tot_int_add: 200, alarms: 0, calc_supply: 274, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:10:32', version: 7641, r_version: 2, bt1: -15, bt2: 285, bt3: 237, bt6: 487, bt7: 533, bt16: -1, bt18: 274, bt19: 307, bt20: 167, bt21: -1, bt22: 184, tot_int_add: 559, alarms: 0, calc_supply: 274, bt1_avg: 20, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:15:32', version: 7641, r_version: 2, bt1: -17, bt2: 298, bt3: 242, bt6: 486, bt7: 532, bt16: 1, bt18: 280, bt19: 336, bt20: 167, bt21: -2, bt22: 193, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:20:32', version: 7641, r_version: 2, bt1: -17, bt2: 296, bt3: 243, bt6: 486, bt7: 533, bt16: 0, bt18: 279, bt19: 365, bt20: 169, bt21: 0, bt22: 193, tot_int_add: 559, alarms: 0, calc_supply: 275, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:25:32', version: 7641, r_version: 2, bt1: -19, bt2: 290, bt3: 243, bt6: 485, bt7: 532, bt16: -5, bt18: 286, bt19: 408, bt20: 167, bt21: -2, bt22: 193, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 19, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:30:37', version: 7641, r_version: 2, bt1: -20, bt2: 283, bt3: 243, bt6: 486, bt7: 533, bt16: 0, bt18: 300, bt19: 449, bt20: 166, bt21: 2, bt22: 185, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 18, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:35:37', version: 7641, r_version: 2, bt1: -21, bt2: 284, bt3: 245, bt6: 496, bt7: 532, bt16: 0, bt18: 321, bt19: 493, bt20: 168, bt21: -1, bt22: 184, tot_int_add: 559, alarms: 0, calc_supply: 276, bt1_avg: 18, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:40:37', version: 7641, r_version: 2, bt1: -22, bt2: 283, bt3: 243, bt6: 515, bt7: 532, bt16: -1, bt18: 337, bt19: 526, bt20: 167, bt21: 0, bt22: 182, tot_int_add: 559, alarms: 0, calc_supply: 277, bt1_avg: 18, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:45:43', version: 7641, r_version: 2, bt1: -23, bt2: 283, bt3: 243, bt6: 538, bt7: 532, bt16: 1, bt18: 351, bt19: 550, bt20: 167, bt21: 5, bt22: 183, tot_int_add: 534, alarms: 182, calc_supply: 277, bt1_avg: 17, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:50:43', version: 7641, r_version: 2, bt1: -25, bt2: 280, bt3: 243, bt6: 547, bt7: 534, bt16: 1, bt18: 360, bt19: 544, bt20: 166, bt21: 4, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 277, bt1_avg: 17, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '18:55:43', version: 7641, r_version: 2, bt1: -25, bt2: 269, bt3: 243, bt6: 533, bt7: 534, bt16: -2, bt18: 361, bt19: 527, bt20: 168, bt21: 3, bt22: 173, tot_int_add: 0, alarms: 0, calc_supply: 278, bt1_avg: 17, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '19:00:48', version: 7641, r_version: 2, bt1: -25, bt2: 268, bt3: 239, bt6: 525, bt7: 534, bt16: -3, bt18: 353, bt19: 507, bt20: 167, bt21: -2, bt22: 174, tot_int_add: 0, alarms: 0, calc_supply: 278, bt1_avg: 16, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '19:05:48', version: 7641, r_version: 2, bt1: -26, bt2: 275, bt3: 240, bt6: 521, bt7: 533, bt16: -3, bt18: 337, bt19: 493, bt20: 167, bt21: -4, bt22: 167, tot_int_add: 467, alarms: 0, calc_supply: 279, bt1_avg: 16, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '19:10:48', version: 7641, r_version: 2, bt1: -26, bt2: 291, bt3: 240, bt6: 531, bt7: 534, bt16: -4, bt18: 340, bt19: 533, bt20: 167, bt21: 1, bt22: 182, tot_int_add: 559, alarms: 0, calc_supply: 292, bt1_avg: 15, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '19:15:51', version: 7641, r_version: 2, bt1: -28, bt2: 294, bt3: 245, bt6: 549, bt7: 535, bt16: 0, bt18: 341, bt19: 555, bt20: 168, bt21: -1, bt22: 191, tot_int_add: 467, alarms: 0, calc_supply: 292, bt1_avg: 15, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '19:20:51', version: 7641, r_version: 2, bt1: -28, bt2: 277, bt3: 243, bt6: 545, bt7: 535, bt16: -2, bt18: 340, bt19: 543, bt20: 167, bt21: -2, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 292, bt1_avg: 15, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '19:25:51', version: 7641, r_version: 2, bt1: -30, bt2: 281, bt3: 240, bt6: 538, bt7: 536, bt16: 1, bt18: 310, bt19: 514, bt20: 168, bt21: 0, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 292, bt1_avg: 14, relays: 3, prio: 50},
-		{date: '2016-10-31', time: '19:30:51', version: 7641, r_version: 2, bt1: -30, bt2: 273, bt3: 240, bt6: 531, bt7: 536, bt16: -6, bt18: 276, bt19: 438, bt20: 167, bt21: 0, bt22: 174, tot_int_add: 0, alarms: 0, calc_supply: 292, bt1_avg: 14, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '19:35:51', version: 7641, r_version: 2, bt1: -30, bt2: 276, bt3: 240, bt6: 529, bt7: 536, bt16: -5, bt18: 276, bt19: 308, bt20: 167, bt21: 1, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 292, bt1_avg: 13, relays: 11, prio: 30},
-		{date: '2016-10-31', time: '19:40:51', version: 7641, r_version: 2, bt1: -32, bt2: 273, bt3: 241, bt6: 525, bt7: 535, bt16: -2, bt18: 277, bt19: 283, bt20: 166, bt21: 2, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 292, bt1_avg: 13, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '19:45:56', version: 7641, r_version: 2, bt1: -32, bt2: 280, bt3: 242, bt6: 521, bt7: 536, bt16: -1, bt18: 277, bt19: 294, bt20: 167, bt21: 4, bt22: 174, tot_int_add: 467, alarms: 0, calc_supply: 294, bt1_avg: 13, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '19:50:56', version: 7641, r_version: 2, bt1: -32, bt2: 275, bt3: 244, bt6: 517, bt7: 534, bt16: -2, bt18: 279, bt19: 278, bt20: 168, bt21: 0, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 294, bt1_avg: 12, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '19:55:56', version: 7641, r_version: 2, bt1: -33, bt2: 286, bt3: 241, bt6: 511, bt7: 534, bt16: -5, bt18: 276, bt19: 294, bt20: 167, bt21: 1, bt22: 175, tot_int_add: 467, alarms: 0, calc_supply: 294, bt1_avg: 12, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '20:00:57', version: 7641, r_version: 2, bt1: -34, bt2: 275, bt3: 243, bt6: 506, bt7: 535, bt16: -6, bt18: 277, bt19: 276, bt20: 166, bt21: 1, bt22: 175, tot_int_add: 0, alarms: 0, calc_supply: 295, bt1_avg: 11, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '20:05:57', version: 7641, r_version: 2, bt1: -34, bt2: 291, bt3: 241, bt6: 504, bt7: 536, bt16: -4, bt18: 277, bt19: 303, bt20: 166, bt21: -3, bt22: 176, tot_int_add: 467, alarms: 0, calc_supply: 295, bt1_avg: 11, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '20:11:05', version: 7641, r_version: 2, bt1: -35, bt2: 272, bt3: 241, bt6: 500, bt7: 534, bt16: -5, bt18: 276, bt19: 275, bt20: 166, bt21: 3, bt22: 175, tot_int_add: 200, alarms: 0, calc_supply: 295, bt1_avg: 10, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '20:16:02', version: 7641, r_version: 2, bt1: -36, bt2: 292, bt3: 243, bt6: 493, bt7: 535, bt16: -5, bt18: 277, bt19: 306, bt20: 167, bt21: 1, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 295, bt1_avg: 10, relays: 3, prio: 30},
-		{date: '2016-10-31', time: '20:21:02', version: 7641, r_version: 2, bt1: -36, bt2: 273, bt3: 241, bt6: 479, bt7: 534, bt16: -1, bt18: 277, bt19: 275, bt20: 166, bt21: 2, bt22: 173, tot_int_add: 200, alarms: 0, calc_supply: 295, bt1_avg: 10, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:25:05', version: 7641, r_version: 2, bt1: -37, bt2: 291, bt3: 241, bt6: 472, bt7: 534, bt16: -5, bt18: 278, bt19: 311, bt20: 166, bt21: -1, bt22: 180, tot_int_add: 559, alarms: 0, calc_supply: 295, bt1_avg: 9, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:30:02', version: 7641, r_version: 2, bt1: -38, bt2: 304, bt3: 244, bt6: 466, bt7: 535, bt16: -6, bt18: 285, bt19: 337, bt20: 166, bt21: 0, bt22: 192, tot_int_add: 559, alarms: 0, calc_supply: 295, bt1_avg: 9, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:35:02', version: 7641, r_version: 2, bt1: -38, bt2: 308, bt3: 249, bt6: 452, bt7: 534, bt16: -3, bt18: 289, bt19: 339, bt20: 166, bt21: -1, bt22: 193, tot_int_add: 559, alarms: 0, calc_supply: 295, bt1_avg: 8, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:40:05', version: 7641, r_version: 2, bt1: -38, bt2: 310, bt3: 249, bt6: 447, bt7: 534, bt16: -6, bt18: 292, bt19: 354, bt20: 165, bt21: -2, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 295, bt1_avg: 8, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:45:02', version: 7641, r_version: 2, bt1: -38, bt2: 306, bt3: 250, bt6: 446, bt7: 533, bt16: -6, bt18: 291, bt19: 370, bt20: 166, bt21: -5, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 295, bt1_avg: 7, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:50:02', version: 7641, r_version: 2, bt1: -38, bt2: 304, bt3: 248, bt6: 446, bt7: 533, bt16: -9, bt18: 287, bt19: 393, bt20: 165, bt21: -3, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 296, bt1_avg: 7, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '20:55:07', version: 7641, r_version: 2, bt1: -39, bt2: 305, bt3: 251, bt6: 450, bt7: 533, bt16: -4, bt18: 291, bt19: 420, bt20: 165, bt21: -3, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 296, bt1_avg: 6, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '21:00:04', version: 7641, r_version: 2, bt1: -39, bt2: 305, bt3: 250, bt6: 456, bt7: 534, bt16: -4, bt18: 292, bt19: 440, bt20: 165, bt21: -6, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 296, bt1_avg: 6, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '21:05:04', version: 7641, r_version: 2, bt1: -40, bt2: 304, bt3: 250, bt6: 463, bt7: 533, bt16: -5, bt18: 296, bt19: 456, bt20: 165, bt21: -1, bt22: 196, tot_int_add: 559, alarms: 0, calc_supply: 296, bt1_avg: 6, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '21:10:11', version: 7641, r_version: 2, bt1: -40, bt2: 302, bt3: 252, bt6: 472, bt7: 532, bt16: -5, bt18: 299, bt19: 471, bt20: 165, bt21: -2, bt22: 196, tot_int_add: 559, alarms: 0, calc_supply: 296, bt1_avg: 5, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '21:15:09', version: 7641, r_version: 2, bt1: -40, bt2: 305, bt3: 251, bt6: 482, bt7: 533, bt16: -3, bt18: 305, bt19: 482, bt20: 166, bt21: -7, bt22: 193, tot_int_add: 559, alarms: 0, calc_supply: 296, bt1_avg: 5, relays: 3, prio: 20},
-		{date: '2016-10-31', time: '21:20:09', version: 7641, r_version: 2, bt1: -40, bt2: 305, bt3: 252, bt6: 495, bt7: 532, bt16: -3, bt18: 313, bt19: 495, bt20: 165, bt21: -8, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 297, bt1_avg: 4, relays: 3, prio: 20}
+        {date: '2016-10-31', time:'18:31:50', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 532, bt7: 548, bt16: -6, bt18: 340, bt19: 504, bt20:186, bt21: -25, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:31:55', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 532, bt7: 548, bt16: -6, bt18: 339, bt19: 503, bt20:186, bt21: -25, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:00', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 532, bt7: 548, bt16: -6, bt18: 338, bt19: 503, bt20:186, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:05', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 532, bt7: 548, bt16: -6, bt18: 338, bt19: 502, bt20:186, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:10', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 532, bt7: 548, bt16: -6, bt18: 337, bt19: 501, bt20:186, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:15', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 532, bt7: 548, bt16: -6, bt18: 336, bt19: 501, bt20:186, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:20', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 335, bt19: 500, bt20:186, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:25', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 335, bt19: 499, bt20:186, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:30', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 334, bt19: 499, bt20:187, bt21: -25, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:35', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 333, bt19: 498, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:40', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 332, bt19: 497, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:45', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 332, bt19: 497, bt20:187, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:50', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 531, bt7: 548, bt16: -6, bt18: 331, bt19: 496, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:32:55', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 331, bt19: 495, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:00', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 331, bt19: 494, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 50},
+        {date: '2016-10-31', time:'18:33:05', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 329, bt19: 494, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:10', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 328, bt19: 493, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:15', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 328, bt19: 492, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:20', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 327, bt19: 492, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:25', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 530, bt7: 548, bt16: -6, bt18: 326, bt19: 491, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:30', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 325, bt19: 490, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:35', version: 5121, bt1: -15, bt2: 292, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 324, bt19: 490, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:40', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 324, bt19: 489, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:45', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 323, bt19: 488, bt20:186, bt21: -25, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:50', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 322, bt19: 487, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:33:55', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 321, bt19: 486, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:00', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 529, bt7: 548, bt16: -6, bt18: 320, bt19: 485, bt20:186, bt21: -25, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:05', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 528, bt7: 548, bt16: -6, bt18: 319, bt19: 484, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 50},
+        {date: '2016-10-31', time:'18:34:10', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 527, bt7: 548, bt16: -6, bt18: 319, bt19: 484, bt20:186, bt21: -25, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:15', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 527, bt7: 548, bt16: -6, bt18: 318, bt19: 483, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:20', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 527, bt7: 548, bt16: -6, bt18: 317, bt19: 482, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:25', version: 5121, bt1: -15, bt2: 291, bt3: 246, bt6: 527, bt7: 548, bt16: -6, bt18: 316, bt19: 482, bt20:186, bt21: -25, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:30', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 527, bt7: 548, bt16: -6, bt18: 315, bt19: 481, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:35', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 527, bt7: 548, bt16: -6, bt18: 315, bt19: 480, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:40', version: 5121, bt1: -15, bt2: 290, bt3: 246, bt6: 527, bt7: 548, bt16: -7, bt18: 313, bt19: 479, bt20:186, bt21: -25, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:45', version: 5121, bt1: -15, bt2: 290, bt3: 245, bt6: 527, bt7: 548, bt16: -8, bt18: 313, bt19: 479, bt20:186, bt21: -26, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:50', version: 5121, bt1: -15, bt2: 290, bt3: 245, bt6: 526, bt7: 548, bt16: -7, bt18: 312, bt19: 478, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:34:55', version: 5121, bt1: -15, bt2: 290, bt3: 244, bt6: 526, bt7: 548, bt16: -6, bt18: 311, bt19: 477, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:35:00', version: 5121, bt1: -15, bt2: 290, bt3: 244, bt6: 526, bt7: 548, bt16: -8, bt18: 310, bt19: 477, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:35:05', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -6, bt18: 309, bt19: 476, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:35:10', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -8, bt18: 307, bt19: 475, bt20:186, bt21: -25, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 50},
+        {date: '2016-10-31', time:'18:35:15', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -8, bt18: 306, bt19: 474, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:35:20', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -7, bt18: 304, bt19: 474, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'18:35:25', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -8, bt18: 303, bt19: 473, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:35:30', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -7, bt18: 302, bt19: 472, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:35:35', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 526, bt7: 548, bt16: -7, bt18: 301, bt19: 471, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:35:40', version: 5121, bt1: -15, bt2: 289, bt3: 244, bt6: 525, bt7: 548, bt16: -8, bt18: 299, bt19: 471, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:35:45', version: 5121, bt1: -15, bt2: 288, bt3: 244, bt6: 525, bt7: 548, bt16: -7, bt18: 298, bt19: 470, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:35:50', version: 5121, bt1: -15, bt2: 288, bt3: 244, bt6: 525, bt7: 548, bt16: -8, bt18: 296, bt19: 469, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:35:55', version: 5121, bt1: -15, bt2: 288, bt3: 244, bt6: 525, bt7: 548, bt16: -7, bt18: 295, bt19: 468, bt20:186, bt21: -26, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:00', version: 5121, bt1: -15, bt2: 288, bt3: 244, bt6: 525, bt7: 548, bt16: -7, bt18: 294, bt19: 468, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:05', version: 5121, bt1: -15, bt2: 288, bt3: 244, bt6: 525, bt7: 548, bt16: -8, bt18: 294, bt19: 467, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:10', version: 5121, bt1: -15, bt2: 288, bt3: 243, bt6: 525, bt7: 548, bt16: -8, bt18: 293, bt19: 466, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:15', version: 5121, bt1: -15, bt2: 287, bt3: 244, bt6: 525, bt7: 548, bt16: -8, bt18: 292, bt19: 465, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:20', version: 5121, bt1: -15, bt2: 287, bt3: 244, bt6: 525, bt7: 548, bt16: -7, bt18: 290, bt19: 464, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:25', version: 5121, bt1: -15, bt2: 287, bt3: 244, bt6: 525, bt7: 548, bt16: -8, bt18: 290, bt19: 463, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:30', version: 5121, bt1: -15, bt2: 286, bt3: 243, bt6: 525, bt7: 548, bt16: -8, bt18: 289, bt19: 463, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:35', version: 5121, bt1: -15, bt2: 286, bt3: 244, bt6: 524, bt7: 548, bt16: -7, bt18: 288, bt19: 462, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:40', version: 5121, bt1: -15, bt2: 286, bt3: 244, bt6: 524, bt7: 548, bt16: -8, bt18: 287, bt19: 461, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:45', version: 5121, bt1: -15, bt2: 286, bt3: 243, bt6: 524, bt7: 548, bt16: -8, bt18: 286, bt19: 460, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:36:50', version: 5121, bt1: -15, bt2: 285, bt3: 243, bt6: 524, bt7: 548, bt16: -8, bt18: 286, bt19: 459, bt20:186, bt21: -26, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:36:55', version: 5121, bt1: -15, bt2: 285, bt3: 244, bt6: 524, bt7: 548, bt16: -8, bt18: 285, bt19: 458, bt20:186, bt21: -26, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:00', version: 5121, bt1: -15, bt2: 285, bt3: 243, bt6: 524, bt7: 547, bt16: -8, bt18: 285, bt19: 457, bt20:186, bt21: -26, bt22: 189, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:05', version: 5121, bt1: -15, bt2: 285, bt3: 243, bt6: 524, bt7: 548, bt16: -8, bt18: 284, bt19: 456, bt20:186, bt21: -27, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:10', version: 5121, bt1: -15, bt2: 285, bt3: 243, bt6: 524, bt7: 547, bt16: -8, bt18: 283, bt19: 455, bt20:186, bt21: -26, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:15', version: 5121, bt1: -15, bt2: 285, bt3: 243, bt6: 524, bt7: 548, bt16: -8, bt18: 282, bt19: 454, bt20:186, bt21: -26, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:20', version: 5121, bt1: -15, bt2: 284, bt3: 243, bt6: 524, bt7: 547, bt16: -8, bt18: 282, bt19: 453, bt20:186, bt21: -27, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:25', version: 5121, bt1: -15, bt2: 284, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 281, bt19: 452, bt20:186, bt21: -27, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:30', version: 5121, bt1: -15, bt2: 283, bt3: 243, bt6: 523, bt7: 547, bt16: -8, bt18: 280, bt19: 451, bt20:186, bt21: -27, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:35', version: 5121, bt1: -15, bt2: 283, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 280, bt19: 450, bt20:186, bt21: -27, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:40', version: 5121, bt1: -15, bt2: 283, bt3: 243, bt6: 523, bt7: 547, bt16: -8, bt18: 280, bt19: 449, bt20:186, bt21: -28, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:45', version: 5121, bt1: -15, bt2: 283, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 279, bt19: 448, bt20:186, bt21: -28, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:50', version: 5121, bt1: -15, bt2: 283, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 279, bt19: 447, bt20:186, bt21: -28, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:37:55', version: 5121, bt1: -15, bt2: 282, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 279, bt19: 446, bt20:186, bt21: -28, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:38:00', version: 5121, bt1: -15, bt2: 282, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 278, bt19: 444, bt20:186, bt21: -28, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:05', version: 5121, bt1: -15, bt2: 282, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 278, bt19: 443, bt20:186, bt21: -27, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:10', version: 5121, bt1: -15, bt2: 282, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 277, bt19: 442, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:15', version: 5121, bt1: -15, bt2: 282, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 277, bt19: 441, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:20', version: 5121, bt1: -15, bt2: 282, bt3: 243, bt6: 523, bt7: 548, bt16: -8, bt18: 277, bt19: 440, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:25', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 522, bt7: 547, bt16: -8, bt18: 276, bt19: 439, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:30', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 522, bt7: 548, bt16: -8, bt18: 276, bt19: 437, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:35', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 522, bt7: 548, bt16: -9, bt18: 276, bt19: 436, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:40', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 522, bt7: 547, bt16: -9, bt18: 275, bt19: 435, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:45', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 522, bt7: 548, bt16: -8, bt18: 275, bt19: 433, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:50', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 522, bt7: 548, bt16: -10, bt18: 275, bt19: 432, bt20:186, bt21: -28, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:38:55', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 522, bt7: 547, bt16: -9, bt18: 275, bt19: 430, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:01', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 522, bt7: 548, bt16: -10, bt18: 275, bt19: 429, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:06', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 522, bt7: 548, bt16: -9, bt18: 275, bt19: 428, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:11', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 522, bt7: 548, bt16: -10, bt18: 275, bt19: 426, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:16', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 522, bt7: 548, bt16: -9, bt18: 274, bt19: 425, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:21', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 522, bt7: 548, bt16: -9, bt18: 274, bt19: 424, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:26', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 522, bt7: 548, bt16: -10, bt18: 274, bt19: 422, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:31', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 522, bt7: 548, bt16: -10, bt18: 274, bt19: 421, bt20:186, bt21: -29, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:36', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 420, bt20:186, bt21: -28, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:39:41', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 419, bt20:185, bt21: -28, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:46', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 418, bt20:186, bt21: -28, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:51', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 416, bt20:186, bt21: -29, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:39:56', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 415, bt20:186, bt21: -29, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:01', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 413, bt20:186, bt21: -28, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:06', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 412, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:11', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 410, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:40:16', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 521, bt7: 547, bt16: -10, bt18: 275, bt19: 409, bt20:186, bt21: -29, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:21', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 275, bt19: 407, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:26', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 275, bt19: 406, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:31', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 404, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:36', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 402, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:41', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 401, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:46', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 399, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:51', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 521, bt7: 548, bt16: -10, bt18: 274, bt19: 398, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:40:56', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 274, bt19: 396, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:01', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 520, bt7: 548, bt16: -10, bt18: 274, bt19: 394, bt20:185, bt21: -30, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:06', version: 5121, bt1: -15, bt2: 282, bt3: 244, bt6: 520, bt7: 547, bt16: -10, bt18: 274, bt19: 393, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:11', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 520, bt7: 547, bt16: -10, bt18: 274, bt19: 391, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:16', version: 5121, bt1: -15, bt2: 281, bt3: 244, bt6: 520, bt7: 548, bt16: -10, bt18: 274, bt19: 389, bt20:186, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:21', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 274, bt19: 387, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:26', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 274, bt19: 386, bt20:185, bt21: -30, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:31', version: 5121, bt1: -14, bt2: 280, bt3: 244, bt6: 520, bt7: 548, bt16: -10, bt18: 274, bt19: 385, bt20:185, bt21: -30, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:36', version: 5121, bt1: -15, bt2: 281, bt3: 243, bt6: 520, bt7: 548, bt16: -11, bt18: 273, bt19: 384, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:41', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 520, bt7: 547, bt16: -10, bt18: 273, bt19: 382, bt20:185, bt21: -30, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:46', version: 5121, bt1: -15, bt2: 280, bt3: 244, bt6: 520, bt7: 548, bt16: -10, bt18: 273, bt19: 380, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:41:51', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 520, bt7: 547, bt16: -10, bt18: 273, bt19: 378, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:41:56', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 273, bt19: 376, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:01', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 273, bt19: 374, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:06', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 273, bt19: 373, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:11', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 520, bt7: 548, bt16: -10, bt18: 272, bt19: 371, bt20:185, bt21: -30, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:16', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 547, bt16: -10, bt18: 272, bt19: 369, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:21', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 520, bt7: 548, bt16: -10, bt18: 272, bt19: 368, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:26', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -10, bt18: 272, bt19: 366, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:42:31', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 519, bt7: 548, bt16: -10, bt18: 272, bt19: 364, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:36', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -10, bt18: 272, bt19: 363, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:41', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 519, bt7: 548, bt16: -10, bt18: 272, bt19: 361, bt20:185, bt21: -30, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:46', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 519, bt7: 548, bt16: -12, bt18: 272, bt19: 359, bt20:185, bt21: -31, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:51', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -12, bt18: 273, bt19: 358, bt20:185, bt21: -32, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:42:56', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 519, bt7: 548, bt16: -10, bt18: 273, bt19: 357, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:01', version: 5121, bt1: -14, bt2: 279, bt3: 244, bt6: 519, bt7: 547, bt16: -10, bt18: 273, bt19: 355, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:06', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 547, bt16: -11, bt18: 273, bt19: 353, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:11', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 519, bt7: 547, bt16: -10, bt18: 273, bt19: 352, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:16', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 519, bt7: 548, bt16: -11, bt18: 273, bt19: 351, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:21', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -12, bt18: 273, bt19: 349, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:26', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -10, bt18: 274, bt19: 348, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:31', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 547, bt16: -12, bt18: 274, bt19: 346, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:43:36', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 547, bt16: -12, bt18: 274, bt19: 345, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:41', version: 5121, bt1: -14, bt2: 279, bt3: 244, bt6: 519, bt7: 547, bt16: -12, bt18: 274, bt19: 344, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:46', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 519, bt7: 547, bt16: -12, bt18: 274, bt19: 342, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:51', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -11, bt18: 274, bt19: 341, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 300, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:43:56', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -12, bt18: 274, bt19: 339, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:01', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -11, bt18: 274, bt19: 338, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:06', version: 5121, bt1: -14, bt2: 279, bt3: 243, bt6: 519, bt7: 548, bt16: -12, bt18: 275, bt19: 337, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:44:11', version: 5121, bt1: -14, bt2: 279, bt3: 243, bt6: 518, bt7: 547, bt16: -12, bt18: 275, bt19: 336, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:16', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 518, bt7: 547, bt16: -12, bt18: 275, bt19: 335, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:21', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 334, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:26', version: 5121, bt1: -14, bt2: 280, bt3: 244, bt6: 518, bt7: 548, bt16: -11, bt18: 275, bt19: 333, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:31', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 332, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:36', version: 5121, bt1: -15, bt2: 279, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 331, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:41', version: 5121, bt1: -15, bt2: 279, bt3: 244, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 331, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:44:46', version: 5121, bt1: -14, bt2: 279, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 330, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:51', version: 5121, bt1: -14, bt2: 279, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 329, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:44:56', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 329, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:01', version: 5121, bt1: -15, bt2: 280, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 328, bt20:185, bt21: -32, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:06', version: 5121, bt1: -14, bt2: 280, bt3: 243, bt6: 518, bt7: 548, bt16: -12, bt18: 275, bt19: 327, bt20:185, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:11', version: 5121, bt1: -14, bt2: 280, bt3: 243, bt6: 518, bt7: 547, bt16: -12, bt18: 275, bt19: 327, bt20:185, bt21: -33, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:16', version: 5121, bt1: -14, bt2: 281, bt3: 243, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 326, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:45:21', version: 5121, bt1: -14, bt2: 281, bt3: 243, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 325, bt20:185, bt21: -33, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:26', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 548, bt16: -12, bt18: 276, bt19: 325, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:31', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 548, bt16: -12, bt18: 276, bt19: 324, bt20:185, bt21: -33, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:36', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 324, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:41', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 323, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:46', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 323, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:51', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 322, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:45:56', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 518, bt7: 548, bt16: -12, bt18: 276, bt19: 322, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:01', version: 5121, bt1: -14, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 321, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:06', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 320, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:11', version: 5121, bt1: -14, bt2: 280, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 275, bt19: 320, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:16', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 276, bt19: 319, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:21', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 275, bt19: 319, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:26', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 518, bt7: 547, bt16: -12, bt18: 275, bt19: 318, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:31', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 548, bt16: -12, bt18: 275, bt19: 318, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:36', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 317, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:41', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 317, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:46', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 317, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:51', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 316, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:46:56', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 275, bt19: 316, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:47:01', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 315, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:06', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 275, bt19: 315, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:11', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 315, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:16', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 314, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:21', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 314, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:26', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 313, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:31', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 313, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:36', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 312, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:41', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 312, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:46', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 311, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:51', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 311, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:47:56', version: 5121, bt1: -13, bt2: 282, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 276, bt19: 310, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:01', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 517, bt7: 547, bt16: -12, bt18: 275, bt19: 310, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:06', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 310, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:11', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 309, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:16', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 309, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:21', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 308, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:26', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 275, bt19: 308, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:31', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 275, bt19: 308, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:36', version: 5121, bt1: -13, bt2: 281, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 307, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:41', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 307, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:46', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 516, bt7: 547, bt16: -12, bt18: 276, bt19: 306, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:51', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 515, bt7: 547, bt16: -12, bt18: 275, bt19: 306, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:48:56', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 515, bt7: 547, bt16: -12, bt18: 275, bt19: 305, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:01', version: 5121, bt1: -13, bt2: 280, bt3: 242, bt6: 515, bt7: 547, bt16: -12, bt18: 275, bt19: 305, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:06', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 515, bt7: 548, bt16: -12, bt18: 275, bt19: 305, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:11', version: 5121, bt1: -13, bt2: 279, bt3: 242, bt6: 515, bt7: 547, bt16: -12, bt18: 275, bt19: 304, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:49:16', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 515, bt7: 547, bt16: -12, bt18: 275, bt19: 304, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:21', version: 5121, bt1: -13, bt2: 280, bt3: 243, bt6: 515, bt7: 547, bt16: -12, bt18: 275, bt19: 303, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:26', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 514, bt7: 547, bt16: -12, bt18: 275, bt19: 303, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:31', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 514, bt7: 547, bt16: -12, bt18: 275, bt19: 303, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:36', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 514, bt7: 547, bt16: -12, bt18: 275, bt19: 302, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:41', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 514, bt7: 547, bt16: -12, bt18: 275, bt19: 302, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:46', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 514, bt7: 547, bt16: -12, bt18: 275, bt19: 301, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:49:51', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 514, bt7: 547, bt16: -12, bt18: 275, bt19: 301, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:49:56', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 513, bt7: 547, bt16: -12, bt18: 275, bt19: 301, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:01', version: 5121, bt1: -13, bt2: 279, bt3: 243, bt6: 513, bt7: 547, bt16: -12, bt18: 275, bt19: 300, bt20:185, bt21: -34, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:06', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 513, bt7: 547, bt16: -12, bt18: 275, bt19: 300, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:11', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 513, bt7: 547, bt16: -12, bt18: 275, bt19: 299, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:16', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 512, bt7: 547, bt16: -12, bt18: 275, bt19: 299, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:21', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 511, bt7: 547, bt16: -12, bt18: 275, bt19: 299, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:50:26', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 511, bt7: 547, bt16: -12, bt18: 275, bt19: 298, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:31', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 511, bt7: 547, bt16: -12, bt18: 275, bt19: 298, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:36', version: 5121, bt1: -13, bt2: 278, bt3: 243, bt6: 510, bt7: 547, bt16: -12, bt18: 275, bt19: 297, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:41', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 510, bt7: 547, bt16: -12, bt18: 275, bt19: 297, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:46', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 510, bt7: 547, bt16: -12, bt18: 275, bt19: 296, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:52', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 510, bt7: 547, bt16: -12, bt18: 275, bt19: 296, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:50:57', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 509, bt7: 547, bt16: -12, bt18: 275, bt19: 296, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:02', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 509, bt7: 547, bt16: -12, bt18: 275, bt19: 295, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:07', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 509, bt7: 547, bt16: -12, bt18: 275, bt19: 295, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:12', version: 5121, bt1: -13, bt2: 277, bt3: 243, bt6: 508, bt7: 547, bt16: -12, bt18: 275, bt19: 294, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:17', version: 5121, bt1: -13, bt2: 276, bt3: 243, bt6: 508, bt7: 547, bt16: -12, bt18: 275, bt19: 294, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:22', version: 5121, bt1: -13, bt2: 276, bt3: 243, bt6: 507, bt7: 547, bt16: -12, bt18: 275, bt19: 294, bt20:185, bt21: -34, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:27', version: 5121, bt1: -13, bt2: 276, bt3: 243, bt6: 507, bt7: 547, bt16: -12, bt18: 275, bt19: 294, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:32', version: 5121, bt1: -13, bt2: 276, bt3: 243, bt6: 506, bt7: 547, bt16: -12, bt18: 275, bt19: 293, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:37', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 506, bt7: 547, bt16: -12, bt18: 275, bt19: 293, bt20:185, bt21: -35, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:42', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 506, bt7: 547, bt16: -12, bt18: 275, bt19: 293, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:47', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 505, bt7: 547, bt16: -12, bt18: 275, bt19: 293, bt20:185, bt21: -35, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:52', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 505, bt7: 547, bt16: -12, bt18: 275, bt19: 292, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:51:57', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 504, bt7: 547, bt16: -12, bt18: 275, bt19: 292, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:02', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 504, bt7: 547, bt16: -12, bt18: 275, bt19: 292, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:52:07', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 503, bt7: 547, bt16: -12, bt18: 275, bt19: 291, bt20:185, bt21: -35, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:12', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 503, bt7: 547, bt16: -12, bt18: 275, bt19: 291, bt20:185, bt21: -34, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:17', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 502, bt7: 547, bt16: -12, bt18: 275, bt19: 291, bt20:185, bt21: -35, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:22', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 502, bt7: 547, bt16: -12, bt18: 275, bt19: 290, bt20:185, bt21: -35, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:27', version: 5121, bt1: -13, bt2: 275, bt3: 243, bt6: 502, bt7: 547, bt16: -12, bt18: 275, bt19: 291, bt20:185, bt21: -35, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:32', version: 5121, bt1: -13, bt2: 274, bt3: 243, bt6: 501, bt7: 547, bt16: -12, bt18: 275, bt19: 290, bt20:185, bt21: -35, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:37', version: 5121, bt1: -13, bt2: 274, bt3: 243, bt6: 501, bt7: 547, bt16: -12, bt18: 275, bt19: 290, bt20:185, bt21: -35, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:52:42', version: 5121, bt1: -13, bt2: 274, bt3: 243, bt6: 500, bt7: 547, bt16: -12, bt18: 274, bt19: 289, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:47', version: 5121, bt1: -13, bt2: 274, bt3: 243, bt6: 500, bt7: 547, bt16: -12, bt18: 275, bt19: 289, bt20:185, bt21: -35, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:52', version: 5121, bt1: -13, bt2: 274, bt3: 243, bt6: 499, bt7: 547, bt16: -12, bt18: 274, bt19: 289, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:52:57', version: 5121, bt1: -13, bt2: 274, bt3: 243, bt6: 499, bt7: 547, bt16: -12, bt18: 275, bt19: 289, bt20:185, bt21: -35, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:02', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 498, bt7: 547, bt16: -12, bt18: 274, bt19: 288, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:07', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 498, bt7: 547, bt16: -12, bt18: 274, bt19: 288, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:12', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 497, bt7: 547, bt16: -12, bt18: 275, bt19: 288, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'18:53:17', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 497, bt7: 547, bt16: -12, bt18: 275, bt19: 288, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:22', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 496, bt7: 547, bt16: -12, bt18: 274, bt19: 288, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:27', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 496, bt7: 547, bt16: -12, bt18: 275, bt19: 287, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:32', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 495, bt7: 547, bt16: -12, bt18: 275, bt19: 287, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:37', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 495, bt7: 547, bt16: -12, bt18: 274, bt19: 287, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:42', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 494, bt7: 547, bt16: -12, bt18: 274, bt19: 287, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:47', version: 5121, bt1: -13, bt2: 272, bt3: 242, bt6: 494, bt7: 547, bt16: -12, bt18: 274, bt19: 286, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:52', version: 5121, bt1: -13, bt2: 272, bt3: 243, bt6: 493, bt7: 547, bt16: -12, bt18: 274, bt19: 286, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:53:57', version: 5121, bt1: -13, bt2: 272, bt3: 243, bt6: 493, bt7: 547, bt16: -13, bt18: 274, bt19: 286, bt20:185, bt21: -36, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:02', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 492, bt7: 547, bt16: -12, bt18: 274, bt19: 286, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:07', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 492, bt7: 547, bt16: -12, bt18: 274, bt19: 286, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:12', version: 5121, bt1: -13, bt2: 273, bt3: 243, bt6: 492, bt7: 547, bt16: -13, bt18: 274, bt19: 286, bt20:185, bt21: -37, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:17', version: 5121, bt1: -13, bt2: 272, bt3: 243, bt6: 491, bt7: 547, bt16: -12, bt18: 274, bt19: 285, bt20:185, bt21: -37, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:22', version: 5121, bt1: -12, bt2: 272, bt3: 242, bt6: 491, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -36, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:27', version: 5121, bt1: -12, bt2: 272, bt3: 243, bt6: 490, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:32', version: 5121, bt1: -12, bt2: 272, bt3: 242, bt6: 490, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'18:54:37', version: 5121, bt1: -12, bt2: 272, bt3: 243, bt6: 489, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:54:42', version: 5121, bt1: -12, bt2: 271, bt3: 243, bt6: 489, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'18:54:47', version: 5121, bt1: -12, bt2: 271, bt3: 242, bt6: 488, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'18:54:52', version: 5121, bt1: -12, bt2: 272, bt3: 243, bt6: 488, bt7: 547, bt16: -12, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'18:54:57', version: 5121, bt1: -12, bt2: 271, bt3: 242, bt6: 488, bt7: 547, bt16: -13, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'18:55:02', version: 5121, bt1: -12, bt2: 271, bt3: 242, bt6: 486, bt7: 547, bt16: -13, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:07', version: 5121, bt1: -12, bt2: 272, bt3: 242, bt6: 486, bt7: 547, bt16: -13, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:12', version: 5121, bt1: -12, bt2: 272, bt3: 242, bt6: 486, bt7: 547, bt16: -13, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:17', version: 5121, bt1: -12, bt2: 272, bt3: 242, bt6: 485, bt7: 547, bt16: -13, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:22', version: 5121, bt1: -12, bt2: 272, bt3: 242, bt6: 485, bt7: 547, bt16: -13, bt18: 274, bt19: 284, bt20:185, bt21: -38, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:27', version: 5121, bt1: -12, bt2: 273, bt3: 242, bt6: 484, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:184, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:32', version: 5121, bt1: -12, bt2: 273, bt3: 242, bt6: 484, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:37', version: 5121, bt1: -12, bt2: 274, bt3: 242, bt6: 484, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:185, bt21: -38, bt22: 179, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:42', version: 5121, bt1: -12, bt2: 275, bt3: 241, bt6: 483, bt7: 547, bt16: -13, bt18: 274, bt19: 285, bt20:184, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:47', version: 5121, bt1: -12, bt2: 276, bt3: 241, bt6: 483, bt7: 547, bt16: -13, bt18: 274, bt19: 286, bt20:185, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:52', version: 5121, bt1: -12, bt2: 276, bt3: 241, bt6: 483, bt7: 547, bt16: -13, bt18: 274, bt19: 286, bt20:184, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:55:57', version: 5121, bt1: -12, bt2: 277, bt3: 241, bt6: 482, bt7: 547, bt16: -14, bt18: 274, bt19: 287, bt20:184, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:02', version: 5121, bt1: -12, bt2: 277, bt3: 241, bt6: 482, bt7: 547, bt16: -13, bt18: 274, bt19: 287, bt20:184, bt21: -38, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:07', version: 5121, bt1: -12, bt2: 277, bt3: 241, bt6: 482, bt7: 547, bt16: -14, bt18: 274, bt19: 288, bt20:184, bt21: -39, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:12', version: 5121, bt1: -12, bt2: 278, bt3: 241, bt6: 481, bt7: 547, bt16: -14, bt18: 274, bt19: 288, bt20:184, bt21: -39, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:17', version: 5121, bt1: -12, bt2: 278, bt3: 241, bt6: 481, bt7: 547, bt16: -13, bt18: 274, bt19: 289, bt20:184, bt21: -39, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:22', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 481, bt7: 547, bt16: -15, bt18: 274, bt19: 290, bt20:184, bt21: -40, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:27', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 480, bt7: 547, bt16: -14, bt18: 274, bt19: 290, bt20:184, bt21: -40, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 20},
+        {date: '2016-10-31', time:'18:56:32', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 480, bt7: 547, bt16: -14, bt18: 275, bt19: 291, bt20:184, bt21: -40, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:37', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 480, bt7: 547, bt16: -15, bt18: 275, bt19: 291, bt20:184, bt21: -40, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:42', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 479, bt7: 547, bt16: -15, bt18: 275, bt19: 292, bt20:184, bt21: -40, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:47', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 479, bt7: 547, bt16: -15, bt18: 275, bt19: 292, bt20:184, bt21: -40, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:52', version: 5121, bt1: -12, bt2: 279, bt3: 241, bt6: 479, bt7: 547, bt16: -15, bt18: 275, bt19: 293, bt20:184, bt21: -40, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:56:57', version: 5121, bt1: -12, bt2: 280, bt3: 241, bt6: 478, bt7: 547, bt16: -15, bt18: 275, bt19: 293, bt20:184, bt21: -40, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:02', version: 5121, bt1: -12, bt2: 280, bt3: 241, bt6: 478, bt7: 547, bt16: -15, bt18: 275, bt19: 294, bt20:184, bt21: -40, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 11, prio: 20},
+        {date: '2016-10-31', time:'18:57:07', version: 5121, bt1: -12, bt2: 281, bt3: 241, bt6: 478, bt7: 547, bt16: -15, bt18: 275, bt19: 294, bt20:184, bt21: -40, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:12', version: 5121, bt1: -12, bt2: 281, bt3: 241, bt6: 478, bt7: 547, bt16: -15, bt18: 275, bt19: 294, bt20:184, bt21: -40, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:17', version: 5121, bt1: -12, bt2: 281, bt3: 241, bt6: 477, bt7: 547, bt16: -15, bt18: 275, bt19: 295, bt20:184, bt21: -40, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:22', version: 5121, bt1: -12, bt2: 282, bt3: 241, bt6: 477, bt7: 547, bt16: -15, bt18: 275, bt19: 296, bt20:184, bt21: -40, bt22: 181, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:27', version: 5121, bt1: -12, bt2: 282, bt3: 241, bt6: 477, bt7: 547, bt16: -15, bt18: 275, bt19: 296, bt20:184, bt21: -40, bt22: 181, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:32', version: 5121, bt1: -12, bt2: 282, bt3: 241, bt6: 477, bt7: 547, bt16: -15, bt18: 275, bt19: 297, bt20:184, bt21: -40, bt22: 181, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:37', version: 5121, bt1: -12, bt2: 282, bt3: 241, bt6: 476, bt7: 547, bt16: -15, bt18: 274, bt19: 297, bt20:184, bt21: -40, bt22: 181, tot_int_add: 200, alarms: 0, calc_supply: 301, bt1_avg: 26, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:42', version: 5121, bt1: -12, bt2: 283, bt3: 241, bt6: 476, bt7: 547, bt16: -15, bt18: 274, bt19: 298, bt20:184, bt21: -40, bt22: 181, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:47', version: 5121, bt1: -12, bt2: 283, bt3: 242, bt6: 476, bt7: 547, bt16: -15, bt18: 274, bt19: 298, bt20:184, bt21: -40, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:52', version: 5121, bt1: -12, bt2: 283, bt3: 242, bt6: 476, bt7: 547, bt16: -15, bt18: 274, bt19: 298, bt20:184, bt21: -41, bt22: 181, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:57:57', version: 5121, bt1: -12, bt2: 284, bt3: 242, bt6: 475, bt7: 547, bt16: -15, bt18: 274, bt19: 299, bt20:184, bt21: -41, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:02', version: 5121, bt1: -12, bt2: 284, bt3: 242, bt6: 475, bt7: 547, bt16: -15, bt18: 274, bt19: 299, bt20:184, bt21: -42, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:07', version: 5121, bt1: -12, bt2: 286, bt3: 242, bt6: 475, bt7: 547, bt16: -16, bt18: 274, bt19: 299, bt20:184, bt21: -42, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:12', version: 5121, bt1: -12, bt2: 287, bt3: 242, bt6: 474, bt7: 547, bt16: -15, bt18: 274, bt19: 300, bt20:184, bt21: -42, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:17', version: 5121, bt1: -12, bt2: 288, bt3: 242, bt6: 474, bt7: 547, bt16: -16, bt18: 274, bt19: 300, bt20:184, bt21: -42, bt22: 183, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:22', version: 5121, bt1: -12, bt2: 288, bt3: 242, bt6: 474, bt7: 547, bt16: -15, bt18: 274, bt19: 301, bt20:184, bt21: -42, bt22: 183, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:27', version: 5121, bt1: -12, bt2: 289, bt3: 242, bt6: 474, bt7: 547, bt16: -16, bt18: 274, bt19: 301, bt20:184, bt21: -42, bt22: 183, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:32', version: 5121, bt1: -12, bt2: 290, bt3: 242, bt6: 473, bt7: 547, bt16: -16, bt18: 274, bt19: 302, bt20:184, bt21: -42, bt22: 183, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:37', version: 5121, bt1: -12, bt2: 291, bt3: 242, bt6: 473, bt7: 547, bt16: -17, bt18: 274, bt19: 303, bt20:184, bt21: -42, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:42', version: 5121, bt1: -12, bt2: 293, bt3: 243, bt6: 473, bt7: 547, bt16: -17, bt18: 274, bt19: 303, bt20:184, bt21: -42, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:47', version: 5121, bt1: -12, bt2: 294, bt3: 242, bt6: 472, bt7: 547, bt16: -16, bt18: 274, bt19: 304, bt20:184, bt21: -42, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:52', version: 5121, bt1: -12, bt2: 294, bt3: 243, bt6: 472, bt7: 547, bt16: -17, bt18: 274, bt19: 306, bt20:184, bt21: -42, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:58:57', version: 5121, bt1: -12, bt2: 294, bt3: 243, bt6: 472, bt7: 547, bt16: -17, bt18: 274, bt19: 307, bt20:184, bt21: -42, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:02', version: 5121, bt1: -12, bt2: 295, bt3: 243, bt6: 471, bt7: 547, bt16: -17, bt18: 275, bt19: 308, bt20:184, bt21: -42, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:07', version: 5121, bt1: -12, bt2: 296, bt3: 243, bt6: 471, bt7: 547, bt16: -16, bt18: 275, bt19: 309, bt20:184, bt21: -42, bt22: 185, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:12', version: 5121, bt1: -12, bt2: 297, bt3: 243, bt6: 471, bt7: 547, bt16: -17, bt18: 275, bt19: 311, bt20:184, bt21: -42, bt22: 185, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:17', version: 5121, bt1: -12, bt2: 297, bt3: 243, bt6: 471, bt7: 547, bt16: -16, bt18: 275, bt19: 312, bt20:184, bt21: -42, bt22: 185, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:22', version: 5121, bt1: -12, bt2: 298, bt3: 243, bt6: 470, bt7: 547, bt16: -17, bt18: 275, bt19: 313, bt20:184, bt21: -42, bt22: 186, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:27', version: 5121, bt1: -12, bt2: 299, bt3: 243, bt6: 470, bt7: 547, bt16: -17, bt18: 276, bt19: 314, bt20:184, bt21: -42, bt22: 186, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:32', version: 5121, bt1: -12, bt2: 300, bt3: 243, bt6: 470, bt7: 547, bt16: -17, bt18: 276, bt19: 315, bt20:184, bt21: -42, bt22: 186, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:37', version: 5121, bt1: -12, bt2: 301, bt3: 243, bt6: 469, bt7: 547, bt16: -17, bt18: 276, bt19: 317, bt20:184, bt21: -42, bt22: 187, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:42', version: 5121, bt1: -12, bt2: 301, bt3: 243, bt6: 469, bt7: 547, bt16: -17, bt18: 276, bt19: 318, bt20:184, bt21: -43, bt22: 187, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:47', version: 5121, bt1: -12, bt2: 301, bt3: 243, bt6: 469, bt7: 547, bt16: -17, bt18: 276, bt19: 319, bt20:184, bt21: -43, bt22: 188, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:52', version: 5121, bt1: -12, bt2: 302, bt3: 243, bt6: 469, bt7: 547, bt16: -17, bt18: 277, bt19: 320, bt20:184, bt21: -43, bt22: 188, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'18:59:57', version: 5121, bt1: -12, bt2: 303, bt3: 243, bt6: 468, bt7: 547, bt16: -17, bt18: 277, bt19: 321, bt20:184, bt21: -44, bt22: 189, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:02', version: 5121, bt1: -12, bt2: 304, bt3: 243, bt6: 468, bt7: 547, bt16: -17, bt18: 277, bt19: 323, bt20:184, bt21: -44, bt22: 190, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:07', version: 5121, bt1: -12, bt2: 304, bt3: 243, bt6: 468, bt7: 547, bt16: -17, bt18: 277, bt19: 324, bt20:184, bt21: -44, bt22: 190, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:12', version: 5121, bt1: -12, bt2: 305, bt3: 243, bt6: 468, bt7: 547, bt16: -17, bt18: 277, bt19: 325, bt20:184, bt21: -44, bt22: 191, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:17', version: 5121, bt1: -12, bt2: 305, bt3: 244, bt6: 467, bt7: 547, bt16: -17, bt18: 277, bt19: 326, bt20:184, bt21: -44, bt22: 191, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:22', version: 5121, bt1: -12, bt2: 306, bt3: 244, bt6: 467, bt7: 547, bt16: -17, bt18: 277, bt19: 327, bt20:184, bt21: -44, bt22: 192, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:27', version: 5121, bt1: -12, bt2: 307, bt3: 243, bt6: 467, bt7: 547, bt16: -17, bt18: 277, bt19: 328, bt20:184, bt21: -44, bt22: 192, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:32', version: 5121, bt1: -12, bt2: 306, bt3: 244, bt6: 467, bt7: 547, bt16: -17, bt18: 277, bt19: 329, bt20:184, bt21: -44, bt22: 193, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:37', version: 5121, bt1: -12, bt2: 306, bt3: 244, bt6: 467, bt7: 547, bt16: -17, bt18: 277, bt19: 330, bt20:184, bt21: -44, bt22: 193, tot_int_add: 467, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:42', version: 5121, bt1: -12, bt2: 306, bt3: 244, bt6: 466, bt7: 547, bt16: -17, bt18: 278, bt19: 331, bt20:184, bt21: -44, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:47', version: 5121, bt1: -12, bt2: 307, bt3: 244, bt6: 466, bt7: 547, bt16: -17, bt18: 278, bt19: 331, bt20:184, bt21: -44, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:52', version: 5121, bt1: -12, bt2: 307, bt3: 244, bt6: 466, bt7: 547, bt16: -18, bt18: 278, bt19: 332, bt20:184, bt21: -44, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:00:57', version: 5121, bt1: -12, bt2: 308, bt3: 244, bt6: 466, bt7: 547, bt16: -17, bt18: 278, bt19: 332, bt20:184, bt21: -44, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:02', version: 5121, bt1: -12, bt2: 309, bt3: 244, bt6: 466, bt7: 547, bt16: -19, bt18: 278, bt19: 333, bt20:184, bt21: -44, bt22: 196, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:07', version: 5121, bt1: -12, bt2: 309, bt3: 244, bt6: 466, bt7: 547, bt16: -18, bt18: 278, bt19: 334, bt20:184, bt21: -44, bt22: 196, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:12', version: 5121, bt1: -12, bt2: 310, bt3: 244, bt6: 465, bt7: 547, bt16: -18, bt18: 278, bt19: 335, bt20:184, bt21: -45, bt22: 197, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:17', version: 5121, bt1: -12, bt2: 311, bt3: 244, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 336, bt20:184, bt21: -46, bt22: 197, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:01:22', version: 5121, bt1: -12, bt2: 312, bt3: 246, bt6: 465, bt7: 547, bt16: -18, bt18: 278, bt19: 336, bt20:184, bt21: -46, bt22: 197, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:27', version: 5121, bt1: -12, bt2: 313, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 337, bt20:184, bt21: -46, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:32', version: 5121, bt1: -12, bt2: 312, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 338, bt20:184, bt21: -46, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:37', version: 5121, bt1: -12, bt2: 313, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 339, bt20:184, bt21: -46, bt22: 198, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:42', version: 5121, bt1: -12, bt2: 313, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 340, bt20:184, bt21: -46, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:47', version: 5121, bt1: -12, bt2: 314, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 341, bt20:183, bt21: -46, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:52', version: 5121, bt1: -12, bt2: 315, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 342, bt20:184, bt21: -46, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:01:57', version: 5121, bt1: -12, bt2: 317, bt3: 246, bt6: 465, bt7: 547, bt16: -19, bt18: 278, bt19: 342, bt20:184, bt21: -46, bt22: 200, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:02', version: 5121, bt1: -12, bt2: 317, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 279, bt19: 343, bt20:183, bt21: -46, bt22: 200, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:07', version: 5121, bt1: -12, bt2: 317, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 279, bt19: 344, bt20:184, bt21: -46, bt22: 201, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:12', version: 5121, bt1: -12, bt2: 317, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 279, bt19: 345, bt20:184, bt21: -46, bt22: 202, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:17', version: 5121, bt1: -12, bt2: 318, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 279, bt19: 345, bt20:183, bt21: -46, bt22: 202, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:22', version: 5121, bt1: -12, bt2: 319, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 279, bt19: 346, bt20:184, bt21: -46, bt22: 202, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:02:27', version: 5121, bt1: -12, bt2: 319, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 280, bt19: 347, bt20:183, bt21: -46, bt22: 203, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:32', version: 5121, bt1: -12, bt2: 319, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 280, bt19: 348, bt20:184, bt21: -46, bt22: 203, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:37', version: 5121, bt1: -12, bt2: 320, bt3: 246, bt6: 464, bt7: 547, bt16: -19, bt18: 280, bt19: 348, bt20:184, bt21: -47, bt22: 203, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:42', version: 5121, bt1: -12, bt2: 320, bt3: 247, bt6: 464, bt7: 547, bt16: -19, bt18: 280, bt19: 349, bt20:183, bt21: -47, bt22: 203, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:47', version: 5121, bt1: -12, bt2: 320, bt3: 247, bt6: 464, bt7: 547, bt16: -19, bt18: 280, bt19: 349, bt20:184, bt21: -47, bt22: 204, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:52', version: 5121, bt1: -12, bt2: 320, bt3: 247, bt6: 464, bt7: 547, bt16: -20, bt18: 281, bt19: 350, bt20:184, bt21: -47, bt22: 204, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:02:57', version: 5121, bt1: -12, bt2: 320, bt3: 247, bt6: 464, bt7: 547, bt16: -20, bt18: 281, bt19: 351, bt20:184, bt21: -48, bt22: 205, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:02', version: 5121, bt1: -12, bt2: 320, bt3: 247, bt6: 464, bt7: 547, bt16: -21, bt18: 281, bt19: 351, bt20:183, bt21: -48, bt22: 205, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:07', version: 5121, bt1: -12, bt2: 321, bt3: 247, bt6: 464, bt7: 547, bt16: -19, bt18: 281, bt19: 352, bt20:183, bt21: -48, bt22: 205, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:12', version: 5121, bt1: -12, bt2: 322, bt3: 247, bt6: 464, bt7: 547, bt16: -21, bt18: 281, bt19: 353, bt20:183, bt21: -48, bt22: 206, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:17', version: 5121, bt1: -12, bt2: 322, bt3: 247, bt6: 464, bt7: 547, bt16: -21, bt18: 281, bt19: 353, bt20:184, bt21: -48, bt22: 206, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:22', version: 5121, bt1: -12, bt2: 323, bt3: 247, bt6: 464, bt7: 547, bt16: -21, bt18: 281, bt19: 354, bt20:183, bt21: -48, bt22: 206, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:27', version: 5121, bt1: -12, bt2: 323, bt3: 247, bt6: 464, bt7: 547, bt16: -21, bt18: 281, bt19: 354, bt20:183, bt21: -48, bt22: 207, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:32', version: 5121, bt1: -12, bt2: 323, bt3: 248, bt6: 464, bt7: 547, bt16: -21, bt18: 281, bt19: 354, bt20:183, bt21: -48, bt22: 207, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:38', version: 5121, bt1: -12, bt2: 323, bt3: 247, bt6: 463, bt7: 547, bt16: -20, bt18: 281, bt19: 355, bt20:183, bt21: -48, bt22: 207, tot_int_add: 559, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:43', version: 5121, bt1: -12, bt2: 322, bt3: 247, bt6: 463, bt7: 547, bt16: -21, bt18: 281, bt19: 355, bt20:183, bt21: -48, bt22: 208, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:48', version: 5121, bt1: -12, bt2: 322, bt3: 247, bt6: 463, bt7: 547, bt16: -21, bt18: 281, bt19: 356, bt20:183, bt21: -48, bt22: 208, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:53', version: 5121, bt1: -12, bt2: 322, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 281, bt19: 356, bt20:183, bt21: -48, bt22: 208, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:03:58', version: 5121, bt1: -12, bt2: 323, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 281, bt19: 357, bt20:183, bt21: -48, bt22: 208, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:03', version: 5121, bt1: -12, bt2: 323, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 357, bt20:183, bt21: -48, bt22: 209, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:04:08', version: 5121, bt1: -12, bt2: 324, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 358, bt20:183, bt21: -48, bt22: 209, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:13', version: 5121, bt1: -12, bt2: 326, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 358, bt20:183, bt21: -49, bt22: 209, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:18', version: 5121, bt1: -12, bt2: 327, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 358, bt20:183, bt21: -50, bt22: 209, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:23', version: 5121, bt1: -12, bt2: 328, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 358, bt20:183, bt21: -50, bt22: 209, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:28', version: 5121, bt1: -12, bt2: 329, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 359, bt20:183, bt21: -50, bt22: 210, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:33', version: 5121, bt1: -12, bt2: 330, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 359, bt20:183, bt21: -50, bt22: 210, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:38', version: 5121, bt1: -12, bt2: 331, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 360, bt20:183, bt21: -50, bt22: 210, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:04:43', version: 5121, bt1: -12, bt2: 331, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 282, bt19: 361, bt20:183, bt21: -50, bt22: 210, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:48', version: 5121, bt1: -12, bt2: 333, bt3: 248, bt6: 463, bt7: 547, bt16: -21, bt18: 283, bt19: 361, bt20:183, bt21: -50, bt22: 211, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:53', version: 5121, bt1: -12, bt2: 334, bt3: 248, bt6: 464, bt7: 547, bt16: -21, bt18: 283, bt19: 362, bt20:183, bt21: -50, bt22: 211, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:04:58', version: 5121, bt1: -12, bt2: 335, bt3: 248, bt6: 464, bt7: 547, bt16: -21, bt18: 283, bt19: 363, bt20:183, bt21: -50, bt22: 211, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:03', version: 5121, bt1: -12, bt2: 335, bt3: 249, bt6: 464, bt7: 547, bt16: -22, bt18: 283, bt19: 363, bt20:183, bt21: -50, bt22: 211, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:08', version: 5121, bt1: -12, bt2: 335, bt3: 249, bt6: 464, bt7: 547, bt16: -21, bt18: 283, bt19: 364, bt20:183, bt21: -50, bt22: 211, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:13', version: 5121, bt1: -12, bt2: 336, bt3: 249, bt6: 464, bt7: 547, bt16: -22, bt18: 283, bt19: 365, bt20:183, bt21: -50, bt22: 212, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:05:18', version: 5121, bt1: -12, bt2: 337, bt3: 248, bt6: 464, bt7: 547, bt16: -22, bt18: 283, bt19: 365, bt20:183, bt21: -50, bt22: 212, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:23', version: 5121, bt1: -12, bt2: 338, bt3: 248, bt6: 464, bt7: 547, bt16: -22, bt18: 283, bt19: 366, bt20:183, bt21: -50, bt22: 212, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:28', version: 5121, bt1: -12, bt2: 337, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 283, bt19: 367, bt20:183, bt21: -50, bt22: 213, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:33', version: 5121, bt1: -12, bt2: 338, bt3: 248, bt6: 464, bt7: 547, bt16: -22, bt18: 283, bt19: 368, bt20:183, bt21: -51, bt22: 213, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:38', version: 5121, bt1: -12, bt2: 338, bt3: 248, bt6: 464, bt7: 547, bt16: -21, bt18: 283, bt19: 368, bt20:183, bt21: -51, bt22: 213, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:43', version: 5121, bt1: -12, bt2: 338, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 282, bt19: 369, bt20:183, bt21: -52, bt22: 214, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:48', version: 5121, bt1: -12, bt2: 340, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 282, bt19: 370, bt20:183, bt21: -52, bt22: 214, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:05:53', version: 5121, bt1: -12, bt2: 340, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 282, bt19: 371, bt20:183, bt21: -52, bt22: 215, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:05:58', version: 5121, bt1: -12, bt2: 340, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 282, bt19: 371, bt20:183, bt21: -52, bt22: 215, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:03', version: 5121, bt1: -12, bt2: 340, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 282, bt19: 372, bt20:183, bt21: -52, bt22: 215, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:08', version: 5121, bt1: -12, bt2: 341, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 283, bt19: 373, bt20:183, bt21: -52, bt22: 216, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:13', version: 5121, bt1: -12, bt2: 342, bt3: 248, bt6: 463, bt7: 547, bt16: -23, bt18: 283, bt19: 373, bt20:183, bt21: -52, bt22: 216, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:18', version: 5121, bt1: -12, bt2: 342, bt3: 248, bt6: 464, bt7: 547, bt16: -23, bt18: 283, bt19: 374, bt20:183, bt21: -52, bt22: 218, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:23', version: 5121, bt1: -12, bt2: 342, bt3: 248, bt6: 464, bt7: 547, bt16: -24, bt18: 283, bt19: 375, bt20:183, bt21: -52, bt22: 218, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:06:28', version: 5121, bt1: -12, bt2: 343, bt3: 248, bt6: 463, bt7: 547, bt16: -24, bt18: 283, bt19: 375, bt20:183, bt21: -52, bt22: 219, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:33', version: 5121, bt1: -12, bt2: 343, bt3: 248, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 376, bt20:183, bt21: -52, bt22: 219, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:38', version: 5121, bt1: -12, bt2: 343, bt3: 248, bt6: 463, bt7: 547, bt16: -24, bt18: 284, bt19: 377, bt20:183, bt21: -52, bt22: 220, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:43', version: 5121, bt1: -12, bt2: 342, bt3: 248, bt6: 463, bt7: 547, bt16: -24, bt18: 284, bt19: 377, bt20:183, bt21: -52, bt22: 220, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:48', version: 5121, bt1: -12, bt2: 343, bt3: 248, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 378, bt20:183, bt21: -52, bt22: 220, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:53', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -24, bt18: 285, bt19: 379, bt20:183, bt21: -52, bt22: 221, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:06:58', version: 5121, bt1: -12, bt2: 343, bt3: 248, bt6: 463, bt7: 547, bt16: -25, bt18: 285, bt19: 379, bt20:183, bt21: -52, bt22: 221, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:07:03', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -24, bt18: 285, bt19: 380, bt20:183, bt21: -53, bt22: 221, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:08', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -24, bt18: 285, bt19: 381, bt20:183, bt21: -53, bt22: 222, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:13', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 381, bt20:183, bt21: -53, bt22: 222, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:18', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 382, bt20:183, bt21: -54, bt22: 222, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:23', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 383, bt20:183, bt21: -54, bt22: 223, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:28', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 383, bt20:183, bt21: -54, bt22: 223, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:33', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 384, bt20:183, bt21: -54, bt22: 223, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:07:38', version: 5121, bt1: -12, bt2: 345, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 385, bt20:183, bt21: -54, bt22: 223, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:43', version: 5121, bt1: -12, bt2: 345, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 385, bt20:183, bt21: -54, bt22: 223, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:48', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 386, bt20:183, bt21: -54, bt22: 224, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:53', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 386, bt20:183, bt21: -54, bt22: 224, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:07:58', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 386, bt20:183, bt21: -54, bt22: 224, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:08:03', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 284, bt19: 387, bt20:183, bt21: -54, bt22: 224, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:08:08', version: 5121, bt1: -12, bt2: 343, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 283, bt19: 388, bt20:182, bt21: -55, bt22: 224, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:08:13', version: 5121, bt1: -12, bt2: 344, bt3: 249, bt6: 463, bt7: 547, bt16: -25, bt18: 283, bt19: 388, bt20:183, bt21: -54, bt22: 225, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 7, prio: 20},
+        {date: '2016-10-31', time:'19:08:18', version: 5121, bt1: -12, bt2: 344, bt3: 250, bt6: 463, bt7: 547, bt16: -25, bt18: 283, bt19: 389, bt20:182, bt21: -56, bt22: 225, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:13:18', version: 5121, bt1: -13, bt2: 320, bt3: 253, bt6: 465, bt7: 547, bt16: -30, bt18: 283, bt19: 432, bt20:182, bt21: -63, bt22: 219, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:18:19', version: 5121, bt1: -13, bt2: 310, bt3: 249, bt6: 489, bt7: 547, bt16: -36, bt18: 309, bt19: 487, bt20:181, bt21: -72, bt22: 205, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:23:19', version: 5121, bt1: -15, bt2: 309, bt3: 251, bt6: 521, bt7: 547, bt16: -44, bt18: 325, bt19: 526, bt20:180, bt21: -83, bt22: 204, tot_int_add: 801, alarms: 0, calc_supply: 301, bt1_avg: 25, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:28:19', version: 5121, bt1: -17, bt2: 308, bt3: 250, bt6: 549, bt7: 546, bt16: -48, bt18: 336, bt19: 565, bt20:183, bt21: -90, bt22: 201, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 24, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'19:33:20', version: 5121, bt1: -19, bt2: 283, bt3: 249, bt6: 535, bt7: 547, bt16: -57, bt18: 339, bt19: 520, bt20:186, bt21: -102, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 301, bt1_avg: 24, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'19:38:20', version: 5121, bt1: -21, bt2: 288, bt3: 248, bt6: 510, bt7: 547, bt16: -72, bt18: 324, bt19: 484, bt20:188, bt21: -119, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 302, bt1_avg: 24, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'19:43:21', version: 5121, bt1: -22, bt2: 281, bt3: 247, bt6: 497, bt7: 547, bt16: -5, bt18: 278, bt19: 428, bt20:186, bt21: -15, bt22: 183, tot_int_add: 200, alarms: 183, calc_supply: 302, bt1_avg: 24, relays: 2, prio: 20},
+        {date: '2016-10-31', time:'19:48:21', version: 5121, bt1: -23, bt2: 305, bt3: 247, bt6: 481, bt7: 547, bt16: 63, bt18: 259, bt19: 409, bt20:196, bt21: 57, bt22: 196, tot_int_add: 559, alarms: 183, calc_supply: 303, bt1_avg: 24, relays: 2, prio: 20},
+        {date: '2016-10-31', time:'19:53:21', version: 5121, bt1: -23, bt2: 319, bt3: 250, bt6: 472, bt7: 546, bt16: 139, bt18: 256, bt19: 431, bt20:202, bt21: 126, bt22: 207, tot_int_add: 801, alarms: 183, calc_supply: 303, bt1_avg: 23, relays: 6, prio: 20},
+        {date: '2016-10-31', time:'19:58:22', version: 5121, bt1: -25, bt2: 312, bt3: 249, bt6: 480, bt7: 546, bt16: 44, bt18: 266, bt19: 476, bt20:200, bt21: 19, bt22: 203, tot_int_add: 801, alarms: 0, calc_supply: 303, bt1_avg: 23, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'20:03:22', version: 5121, bt1: -25, bt2: 311, bt3: 252, bt6: 522, bt7: 546, bt16: 6, bt18: 308, bt19: 529, bt20:198, bt21: -6, bt22: 205, tot_int_add: 801, alarms: 0, calc_supply: 303, bt1_avg: 23, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'20:08:23', version: 5121, bt1: -25, bt2: 312, bt3: 250, bt6: 557, bt7: 546, bt16: 6, bt18: 333, bt19: 564, bt20:197, bt21: -8, bt22: 203, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 23, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'20:13:23', version: 5121, bt1: -25, bt2: 287, bt3: 250, bt6: 543, bt7: 548, bt16: 4, bt18: 341, bt19: 534, bt20:196, bt21: -8, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 22, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'20:18:23', version: 5121, bt1: -25, bt2: 296, bt3: 247, bt6: 527, bt7: 548, bt16: 4, bt18: 323, bt19: 494, bt20:195, bt21: -8, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 22, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'20:23:24', version: 5121, bt1: -25, bt2: 285, bt3: 248, bt6: 519, bt7: 548, bt16: 9, bt18: 278, bt19: 428, bt20:195, bt21: 6, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 22, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'20:28:24', version: 5121, bt1: -26, bt2: 285, bt3: 246, bt6: 514, bt7: 548, bt16: 5, bt18: 279, bt19: 336, bt20:194, bt21: -8, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 22, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'20:33:25', version: 5121, bt1: -26, bt2: 283, bt3: 247, bt6: 509, bt7: 547, bt16: 2, bt18: 279, bt19: 306, bt20:194, bt21: -12, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 22, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'20:38:25', version: 5121, bt1: -26, bt2: 279, bt3: 244, bt6: 505, bt7: 547, bt16: 2, bt18: 279, bt19: 294, bt20:193, bt21: -13, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 21, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'20:43:25', version: 5121, bt1: -26, bt2: 276, bt3: 246, bt6: 499, bt7: 547, bt16: 1, bt18: 277, bt19: 287, bt20:192, bt21: -17, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 21, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'20:48:26', version: 5121, bt1: -26, bt2: 281, bt3: 243, bt6: 495, bt7: 547, bt16: -1, bt18: 277, bt19: 292, bt20:191, bt21: -19, bt22: 175, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 21, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'20:53:26', version: 5121, bt1: -26, bt2: 283, bt3: 248, bt6: 443, bt7: 547, bt16: 6, bt18: 278, bt19: 316, bt20:193, bt21: 6, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 21, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'20:58:27', version: 5121, bt1: -26, bt2: 283, bt3: 244, bt6: 317, bt7: 547, bt16: 18, bt18: 276, bt19: 298, bt20:194, bt21: 7, bt22: 178, tot_int_add: 467, alarms: 0, calc_supply: 306, bt1_avg: 20, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:03:27', version: 5121, bt1: -27, bt2: 310, bt3: 248, bt6: 332, bt7: 546, bt16: 13, bt18: 280, bt19: 338, bt20:192, bt21: 2, bt22: 194, tot_int_add: 559, alarms: 0, calc_supply: 306, bt1_avg: 20, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:08:27', version: 5121, bt1: -28, bt2: 335, bt3: 251, bt6: 364, bt7: 546, bt16: 11, bt18: 286, bt19: 361, bt20:192, bt21: -3, bt22: 212, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 20, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:13:28', version: 5121, bt1: -28, bt2: 332, bt3: 254, bt6: 382, bt7: 546, bt16: 9, bt18: 288, bt19: 380, bt20:191, bt21: -8, bt22: 217, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 20, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:18:28', version: 5121, bt1: -26, bt2: 321, bt3: 253, bt6: 409, bt7: 545, bt16: 8, bt18: 289, bt19: 418, bt20:191, bt21: -12, bt22: 211, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 20, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:23:29', version: 5121, bt1: -26, bt2: 316, bt3: 253, bt6: 444, bt7: 545, bt16: 5, bt18: 310, bt19: 459, bt20:190, bt21: -15, bt22: 206, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 19, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:28:29', version: 5121, bt1: -27, bt2: 313, bt3: 252, bt6: 479, bt7: 545, bt16: 2, bt18: 324, bt19: 496, bt20:189, bt21: -19, bt22: 204, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 19, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:33:29', version: 5121, bt1: -28, bt2: 313, bt3: 253, bt6: 507, bt7: 545, bt16: -1, bt18: 332, bt19: 525, bt20:188, bt21: -25, bt22: 203, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 19, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:38:30', version: 5121, bt1: -28, bt2: 315, bt3: 252, bt6: 535, bt7: 544, bt16: -3, bt18: 342, bt19: 551, bt20:187, bt21: -28, bt22: 202, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 19, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:43:30', version: 5121, bt1: -30, bt2: 298, bt3: 253, bt6: 531, bt7: 544, bt16: -6, bt18: 347, bt19: 530, bt20:186, bt21: -35, bt22: 198, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 18, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:48:31', version: 5121, bt1: -30, bt2: 278, bt3: 250, bt6: 499, bt7: 544, bt16: -13, bt18: 347, bt19: 488, bt20:185, bt21: -42, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 18, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:53:31', version: 5121, bt1: -30, bt2: 307, bt3: 250, bt6: 485, bt7: 544, bt16: -20, bt18: 345, bt19: 488, bt20:184, bt21: -50, bt22: 195, tot_int_add: 559, alarms: 0, calc_supply: 306, bt1_avg: 18, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'21:58:31', version: 5121, bt1: -31, bt2: 315, bt3: 252, bt6: 519, bt7: 544, bt16: -25, bt18: 336, bt19: 529, bt20:183, bt21: -57, bt22: 203, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 18, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'22:03:32', version: 5121, bt1: -32, bt2: 309, bt3: 252, bt6: 556, bt7: 544, bt16: -30, bt18: 338, bt19: 563, bt20:182, bt21: -63, bt22: 200, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 18, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'22:08:32', version: 5121, bt1: -30, bt2: 287, bt3: 252, bt6: 533, bt7: 545, bt16: -36, bt18: 341, bt19: 530, bt20:181, bt21: -72, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 17, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'22:13:32', version: 5121, bt1: -30, bt2: 295, bt3: 250, bt6: 518, bt7: 545, bt16: -42, bt18: 317, bt19: 491, bt20:180, bt21: -81, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 17, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'22:18:33', version: 5121, bt1: -30, bt2: 285, bt3: 250, bt6: 509, bt7: 545, bt16: -50, bt18: 277, bt19: 419, bt20:177, bt21: -93, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 17, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'22:23:33', version: 5121, bt1: -30, bt2: 283, bt3: 248, bt6: 503, bt7: 544, bt16: -63, bt18: 276, bt19: 328, bt20:176, bt21: -107, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 17, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'22:28:34', version: 5121, bt1: -30, bt2: 279, bt3: 249, bt6: 498, bt7: 544, bt16: -80, bt18: 276, bt19: 300, bt20:173, bt21: -128, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 16, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'22:33:34', version: 5121, bt1: -28, bt2: 294, bt3: 248, bt6: 492, bt7: 544, bt16: 11, bt18: 268, bt19: 316, bt20:175, bt21: 1, bt22: 181, tot_int_add: 467, alarms: 183, calc_supply: 307, bt1_avg: 16, relays: 2, prio: 20},
+        {date: '2016-10-31', time:'22:38:35', version: 5121, bt1: -28, bt2: 313, bt3: 251, bt6: 488, bt7: 544, bt16: 101, bt18: 270, bt19: 353, bt20:178, bt21: 95, bt22: 197, tot_int_add: 801, alarms: 183, calc_supply: 307, bt1_avg: 16, relays: 2, prio: 20},
+        {date: '2016-10-31', time:'22:43:35', version: 5121, bt1: -30, bt2: 340, bt3: 254, bt6: 486, bt7: 544, bt16: 133, bt18: 269, bt19: 383, bt20:184, bt21: 113, bt22: 214, tot_int_add: 801, alarms: 183, calc_supply: 307, bt1_avg: 16, relays: 6, prio: 20},
+        {date: '2016-10-31', time:'22:48:35', version: 5121, bt1: -28, bt2: 342, bt3: 257, bt6: 486, bt7: 544, bt16: 1, bt18: 282, bt19: 410, bt20:186, bt21: 3, bt22: 222, tot_int_add: 801, alarms: 0, calc_supply: 307, bt1_avg: 16, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'22:53:36', version: 5121, bt1: -28, bt2: 325, bt3: 257, bt6: 486, bt7: 544, bt16: 6, bt18: 298, bt19: 465, bt20:186, bt21: -6, bt22: 212, tot_int_add: 801, alarms: 0, calc_supply: 307, bt1_avg: 15, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'22:58:36', version: 5121, bt1: -28, bt2: 316, bt3: 256, bt6: 525, bt7: 544, bt16: 4, bt18: 330, bt19: 533, bt20:186, bt21: -12, bt22: 205, tot_int_add: 801, alarms: 0, calc_supply: 307, bt1_avg: 15, relays: 3, prio: 20},
+        {date: '2016-10-31', time:'23:03:36', version: 5121, bt1: -28, bt2: 309, bt3: 255, bt6: 559, bt7: 544, bt16: 2, bt18: 348, bt19: 559, bt20:186, bt21: -13, bt22: 203, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 15, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'23:08:37', version: 5121, bt1: -28, bt2: 291, bt3: 253, bt6: 540, bt7: 545, bt16: 2, bt18: 355, bt19: 535, bt20:186, bt21: -15, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 15, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'23:13:37', version: 5121, bt1: -27, bt2: 298, bt3: 253, bt6: 531, bt7: 545, bt16: 1, bt18: 330, bt19: 497, bt20:186, bt21: -17, bt22: 191, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 15, relays: 3, prio: 50},
+        {date: '2016-10-31', time:'23:18:38', version: 5121, bt1: -26, bt2: 289, bt3: 252, bt6: 523, bt7: 545, bt16: -1, bt18: 282, bt19: 442, bt20:186, bt21: -19, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 14, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:23:38', version: 5121, bt1: -26, bt2: 286, bt3: 251, bt6: 519, bt7: 545, bt16: -3, bt18: 281, bt19: 353, bt20:186, bt21: -21, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 14, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:28:38', version: 5121, bt1: -25, bt2: 288, bt3: 251, bt6: 516, bt7: 545, bt16: -2, bt18: 283, bt19: 315, bt20:185, bt21: -25, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 14, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:33:39', version: 5121, bt1: -25, bt2: 284, bt3: 250, bt6: 511, bt7: 545, bt16: -5, bt18: 282, bt19: 299, bt20:185, bt21: -28, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 14, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:38:39', version: 5121, bt1: -25, bt2: 280, bt3: 250, bt6: 506, bt7: 545, bt16: -8, bt18: 281, bt19: 292, bt20:184, bt21: -32, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 14, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:43:40', version: 5121, bt1: -26, bt2: 277, bt3: 249, bt6: 501, bt7: 544, bt16: -12, bt18: 279, bt19: 289, bt20:184, bt21: -36, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 13, relays: 11, prio: 30},
+        {date: '2016-10-31', time:'23:48:40', version: 5121, bt1: -26, bt2: 277, bt3: 249, bt6: 497, bt7: 544, bt16: -14, bt18: 279, bt19: 287, bt20:183, bt21: -41, bt22: 176, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 13, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:53:40', version: 5121, bt1: -26, bt2: 300, bt3: 250, bt6: 494, bt7: 544, bt16: -19, bt18: 281, bt19: 327, bt20:182, bt21: -47, bt22: 190, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 13, relays: 3, prio: 30},
+        {date: '2016-10-31', time:'23:58:41', version: 5121, bt1: -25, bt2: 279, bt3: 249, bt6: 493, bt7: 544, bt16: -23, bt18: 280, bt19: 293, bt20:182, bt21: -54, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 13, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'00:03:41', version: 5121, bt1: -25, bt2: 293, bt3: 249, bt6: 487, bt7: 544, bt16: -28, bt18: 280, bt19: 308, bt20:181, bt21: -63, bt22: 182, tot_int_add: 467, alarms: 0, calc_supply: 306, bt1_avg: 13, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:08:42', version: 5121, bt1: -25, bt2: 329, bt3: 253, bt6: 485, bt7: 544, bt16: -36, bt18: 286, bt19: 360, bt20:178, bt21: -72, bt22: 206, tot_int_add: 559, alarms: 0, calc_supply: 306, bt1_avg: 13, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:13:42', version: 5121, bt1: -25, bt2: 351, bt3: 257, bt6: 485, bt7: 544, bt16: -43, bt18: 287, bt19: 401, bt20:178, bt21: -81, bt22: 227, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 12, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:18:42', version: 5121, bt1: -24, bt2: 324, bt3: 259, bt6: 488, bt7: 544, bt16: -50, bt18: 293, bt19: 453, bt20:177, bt21: -90, bt22: 218, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 12, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:23:43', version: 5121, bt1: -23, bt2: 317, bt3: 258, bt6: 519, bt7: 543, bt16: -61, bt18: 319, bt19: 526, bt20:175, bt21: -104, bt22: 206, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 12, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:28:43', version: 5121, bt1: -23, bt2: 313, bt3: 256, bt6: 562, bt7: 543, bt16: -78, bt18: 337, bt19: 574, bt20:173, bt21: -124, bt22: 203, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 12, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:33:44', version: 5121, bt1: -23, bt2: 315, bt3: 256, bt6: 596, bt7: 548, bt16: 5, bt18: 337, bt19: 611, bt20:174, bt21: -1, bt22: 205, tot_int_add: 801, alarms: 183, calc_supply: 306, bt1_avg: 12, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'00:38:44', version: 5121, bt1: -22, bt2: 295, bt3: 256, bt6: 586, bt7: 554, bt16: 97, bt18: 309, bt19: 586, bt20:180, bt21: 100, bt22: 199, tot_int_add: 0, alarms: 183, calc_supply: 306, bt1_avg: 12, relays: 2, prio: 50},
+        {date: '2016-11-01', time:'00:43:44', version: 5121, bt1: -21, bt2: 289, bt3: 252, bt6: 564, bt7: 556, bt16: 132, bt18: 289, bt19: 558, bt20:183, bt21: 114, bt22: 177, tot_int_add: 467, alarms: 183, calc_supply: 306, bt1_avg: 11, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'00:48:45', version: 5121, bt1: -21, bt2: 310, bt3: 254, bt6: 556, bt7: 556, bt16: 2, bt18: 304, bt19: 553, bt20:185, bt21: -15, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 306, bt1_avg: 11, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:53:45', version: 5121, bt1: -21, bt2: 315, bt3: 256, bt6: 580, bt7: 557, bt16: 4, bt18: 335, bt19: 585, bt20:186, bt21: -6, bt22: 206, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 11, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'00:58:46', version: 5121, bt1: -21, bt2: 312, bt3: 256, bt6: 610, bt7: 562, bt16: 2, bt18: 358, bt19: 616, bt20:186, bt21: -12, bt22: 205, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 11, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'01:03:46', version: 5121, bt1: -21, bt2: 288, bt3: 255, bt6: 590, bt7: 566, bt16: 2, bt18: 367, bt19: 589, bt20:186, bt21: -14, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 11, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'01:08:46', version: 5121, bt1: -21, bt2: 286, bt3: 254, bt6: 576, bt7: 567, bt16: 1, bt18: 369, bt19: 560, bt20:186, bt21: -16, bt22: 186, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 11, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'01:13:47', version: 5121, bt1: -22, bt2: 315, bt3: 254, bt6: 571, bt7: 567, bt16: -1, bt18: 367, bt19: 554, bt20:186, bt21: -19, bt22: 199, tot_int_add: 559, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'01:18:47', version: 5121, bt1: -23, bt2: 316, bt3: 256, bt6: 586, bt7: 568, bt16: 0, bt18: 370, bt19: 596, bt20:186, bt21: -19, bt22: 204, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'01:23:48', version: 5121, bt1: -23, bt2: 310, bt3: 257, bt6: 611, bt7: 574, bt16: -1, bt18: 377, bt19: 611, bt20:185, bt21: -21, bt22: 205, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'01:28:48', version: 5121, bt1: -23, bt2: 293, bt3: 255, bt6: 594, bt7: 576, bt16: -2, bt18: 379, bt19: 590, bt20:185, bt21: -23, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'01:33:48', version: 5121, bt1: -23, bt2: 296, bt3: 255, bt6: 585, bt7: 578, bt16: -3, bt18: 360, bt19: 557, bt20:185, bt21: -26, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'01:38:49', version: 5121, bt1: -23, bt2: 295, bt3: 254, bt6: 579, bt7: 578, bt16: 70, bt18: 301, bt19: 518, bt20:185, bt21: 94, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 2, prio: 30},
+        {date: '2016-11-01', time:'01:43:49', version: 5121, bt1: -23, bt2: 271, bt3: 252, bt6: 576, bt7: 578, bt16: 136, bt18: 263, bt19: 440, bt20:186, bt21: 123, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 10, relays: 2, prio: 30},
+        {date: '2016-11-01', time:'01:48:50', version: 5121, bt1: -23, bt2: 281, bt3: 251, bt6: 573, bt7: 578, bt16: 6, bt18: 273, bt19: 328, bt20:186, bt21: 4, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 9, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'01:53:50', version: 5121, bt1: -23, bt2: 285, bt3: 251, bt6: 571, bt7: 578, bt16: 3, bt18: 281, bt19: 307, bt20:186, bt21: -10, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 9, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'01:58:50', version: 5121, bt1: -23, bt2: 284, bt3: 251, bt6: 567, bt7: 578, bt16: -1, bt18: 282, bt19: 299, bt20:185, bt21: -15, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 9, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:03:51', version: 5121, bt1: -24, bt2: 282, bt3: 251, bt6: 563, bt7: 576, bt16: -1, bt18: 282, bt19: 294, bt20:185, bt21: -17, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 9, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:08:51', version: 5121, bt1: -25, bt2: 281, bt3: 250, bt6: 558, bt7: 576, bt16: -1, bt18: 281, bt19: 292, bt20:185, bt21: -19, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 9, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:13:51', version: 5121, bt1: -25, bt2: 279, bt3: 250, bt6: 554, bt7: 576, bt16: -2, bt18: 281, bt19: 290, bt20:185, bt21: -22, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 9, relays: 11, prio: 30},
+        {date: '2016-11-01', time:'02:18:52', version: 5121, bt1: -25, bt2: 278, bt3: 250, bt6: 549, bt7: 576, bt16: -3, bt18: 280, bt19: 289, bt20:184, bt21: -25, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:23:52', version: 5121, bt1: -25, bt2: 278, bt3: 249, bt6: 544, bt7: 576, bt16: -6, bt18: 280, bt19: 287, bt20:184, bt21: -26, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:28:53', version: 5121, bt1: -26, bt2: 302, bt3: 250, bt6: 538, bt7: 576, bt16: -8, bt18: 281, bt19: 314, bt20:184, bt21: -30, bt22: 184, tot_int_add: 467, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:33:53', version: 5121, bt1: -26, bt2: 282, bt3: 251, bt6: 536, bt7: 576, bt16: -10, bt18: 282, bt19: 300, bt20:183, bt21: -32, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:38:54', version: 5121, bt1: -26, bt2: 278, bt3: 250, bt6: 530, bt7: 576, bt16: -13, bt18: 281, bt19: 289, bt20:182, bt21: -38, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:43:54', version: 5121, bt1: -26, bt2: 280, bt3: 249, bt6: 522, bt7: 576, bt16: -15, bt18: 279, bt19: 287, bt20:181, bt21: -42, bt22: 176, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:48:54', version: 5121, bt1: -26, bt2: 295, bt3: 251, bt6: 518, bt7: 576, bt16: -21, bt18: 281, bt19: 328, bt20:181, bt21: -48, bt22: 194, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 8, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:53:55', version: 5121, bt1: -27, bt2: 278, bt3: 250, bt6: 515, bt7: 575, bt16: -25, bt18: 281, bt19: 292, bt20:180, bt21: -56, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 7, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'02:58:55', version: 5121, bt1: -28, bt2: 282, bt3: 249, bt6: 506, bt7: 575, bt16: -30, bt18: 279, bt19: 289, bt20:178, bt21: -63, bt22: 176, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 7, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'03:03:55', version: 5121, bt1: -28, bt2: 294, bt3: 251, bt6: 502, bt7: 575, bt16: -36, bt18: 280, bt19: 326, bt20:177, bt21: -72, bt22: 192, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 7, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'03:08:56', version: 5121, bt1: -28, bt2: 277, bt3: 250, bt6: 500, bt7: 575, bt16: -44, bt18: 280, bt19: 290, bt20:176, bt21: -83, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 7, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'03:13:56', version: 5121, bt1: -28, bt2: 287, bt3: 249, bt6: 492, bt7: 575, bt16: -52, bt18: 279, bt19: 300, bt20:175, bt21: -93, bt22: 180, tot_int_add: 467, alarms: 0, calc_supply: 306, bt1_avg: 7, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'03:18:57', version: 5121, bt1: -28, bt2: 281, bt3: 251, bt6: 491, bt7: 575, bt16: -65, bt18: 280, bt19: 308, bt20:173, bt21: -108, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 7, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'03:23:57', version: 5121, bt1: -28, bt2: 287, bt3: 250, bt6: 484, bt7: 575, bt16: -78, bt18: 279, bt19: 300, bt20:169, bt21: -123, bt22: 178, tot_int_add: 200, alarms: 183, calc_supply: 306, bt1_avg: 6, relays: 10, prio: 20},
+        {date: '2016-11-01', time:'03:28:57', version: 5121, bt1: -28, bt2: 311, bt3: 252, bt6: 483, bt7: 575, bt16: 26, bt18: 274, bt19: 345, bt20:175, bt21: 4, bt22: 194, tot_int_add: 559, alarms: 183, calc_supply: 306, bt1_avg: 6, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'03:33:58', version: 5121, bt1: -30, bt2: 337, bt3: 255, bt6: 483, bt7: 574, bt16: 123, bt18: 274, bt19: 373, bt20:178, bt21: 113, bt22: 211, tot_int_add: 801, alarms: 183, calc_supply: 306, bt1_avg: 6, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'03:38:58', version: 5121, bt1: -30, bt2: 338, bt3: 258, bt6: 484, bt7: 574, bt16: 132, bt18: 272, bt19: 392, bt20:182, bt21: 109, bt22: 216, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 6, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'03:43:59', version: 5121, bt1: -30, bt2: 324, bt3: 258, bt6: 486, bt7: 574, bt16: -1, bt18: 284, bt19: 434, bt20:183, bt21: 4, bt22: 213, tot_int_add: 801, alarms: 0, calc_supply: 306, bt1_avg: 6, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'03:48:59', version: 5121, bt1: -30, bt2: 317, bt3: 258, bt6: 513, bt7: 574, bt16: -3, bt18: 318, bt19: 505, bt20:183, bt21: -13, bt22: 206, tot_int_add: 801, alarms: 0, calc_supply: 307, bt1_avg: 6, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'03:53:59', version: 5121, bt1: -30, bt2: 312, bt3: 257, bt6: 562, bt7: 574, bt16: -1, bt18: 342, bt19: 564, bt20:184, bt21: -17, bt22: 202, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 5, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'03:59:00', version: 5121, bt1: -30, bt2: 289, bt3: 255, bt6: 550, bt7: 574, bt16: -1, bt18: 352, bt19: 534, bt20:183, bt21: -19, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 5, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'04:04:00', version: 5121, bt1: -30, bt2: 297, bt3: 254, bt6: 535, bt7: 574, bt16: -3, bt18: 338, bt19: 497, bt20:183, bt21: -21, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 5, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'04:09:01', version: 5121, bt1: -30, bt2: 291, bt3: 253, bt6: 527, bt7: 574, bt16: -5, bt18: 287, bt19: 446, bt20:183, bt21: -23, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 5, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:14:01', version: 5121, bt1: -28, bt2: 287, bt3: 252, bt6: 525, bt7: 574, bt16: -6, bt18: 281, bt19: 362, bt20:183, bt21: -25, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 5, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:19:01', version: 5121, bt1: -28, bt2: 289, bt3: 252, bt6: 524, bt7: 573, bt16: -8, bt18: 284, bt19: 319, bt20:183, bt21: -26, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 5, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:24:02', version: 5121, bt1: -26, bt2: 285, bt3: 252, bt6: 522, bt7: 573, bt16: -10, bt18: 284, bt19: 302, bt20:182, bt21: -30, bt22: 183, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:29:02', version: 5121, bt1: -26, bt2: 282, bt3: 251, bt6: 518, bt7: 573, bt16: -12, bt18: 282, bt19: 294, bt20:182, bt21: -34, bt22: 181, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 4, relays: 11, prio: 30},
+        {date: '2016-11-01', time:'04:34:03', version: 5121, bt1: -25, bt2: 279, bt3: 250, bt6: 513, bt7: 573, bt16: -15, bt18: 281, bt19: 291, bt20:181, bt21: -38, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:39:03', version: 5121, bt1: -25, bt2: 277, bt3: 250, bt6: 508, bt7: 573, bt16: -17, bt18: 280, bt19: 288, bt20:181, bt21: -44, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 307, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:44:03', version: 5121, bt1: -25, bt2: 285, bt3: 250, bt6: 504, bt7: 573, bt16: -21, bt18: 279, bt19: 292, bt20:180, bt21: -50, bt22: 177, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:49:04', version: 5121, bt1: -23, bt2: 291, bt3: 252, bt6: 502, bt7: 572, bt16: -25, bt18: 281, bt19: 324, bt20:178, bt21: -57, bt22: 194, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:54:04', version: 5121, bt1: -23, bt2: 278, bt3: 250, bt6: 500, bt7: 572, bt16: -30, bt18: 280, bt19: 291, bt20:177, bt21: -65, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'04:59:05', version: 5121, bt1: -23, bt2: 283, bt3: 250, bt6: 493, bt7: 572, bt16: -38, bt18: 280, bt19: 293, bt20:176, bt21: -74, bt22: 178, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 4, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'05:04:05', version: 5121, bt1: -21, bt2: 289, bt3: 252, bt6: 491, bt7: 572, bt16: -46, bt18: 280, bt19: 322, bt20:175, bt21: -83, bt22: 195, tot_int_add: 0, alarms: 0, calc_supply: 306, bt1_avg: 3, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'05:09:05', version: 5121, bt1: -21, bt2: 281, bt3: 249, bt6: 488, bt7: 572, bt16: -54, bt18: 279, bt19: 293, bt20:174, bt21: -95, bt22: 180, tot_int_add: 200, alarms: 0, calc_supply: 306, bt1_avg: 3, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'05:14:06', version: 5121, bt1: -19, bt2: 314, bt3: 252, bt6: 483, bt7: 572, bt16: -67, bt18: 282, bt19: 338, bt20:172, bt21: -110, bt22: 196, tot_int_add: 559, alarms: 0, calc_supply: 306, bt1_avg: 3, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'05:19:06', version: 5121, bt1: -19, bt2: 345, bt3: 255, bt6: 484, bt7: 572, bt16: -71, bt18: 287, bt19: 374, bt20:169, bt21: -113, bt22: 215, tot_int_add: 801, alarms: 183, calc_supply: 306, bt1_avg: 3, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'05:24:07', version: 5121, bt1: -18, bt2: 337, bt3: 259, bt6: 484, bt7: 571, bt16: 27, bt18: 275, bt19: 403, bt20:176, bt21: 11, bt22: 223, tot_int_add: 801, alarms: 183, calc_supply: 306, bt1_avg: 3, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'05:29:07', version: 5121, bt1: -17, bt2: 318, bt3: 257, bt6: 484, bt7: 571, bt16: 125, bt18: 266, bt19: 441, bt20:180, bt21: 112, bt22: 211, tot_int_add: 801, alarms: 183, calc_supply: 306, bt1_avg: 3, relays: 2, prio: 20},
+        {date: '2016-11-01', time:'05:34:07', version: 5121, bt1: -17, bt2: 314, bt3: 257, bt6: 501, bt7: 571, bt16: 127, bt18: 264, bt19: 495, bt20:183, bt21: 101, bt22: 207, tot_int_add: 801, alarms: 0, calc_supply: 305, bt1_avg: 3, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'05:39:08', version: 5121, bt1: -17, bt2: 312, bt3: 254, bt6: 541, bt7: 571, bt16: -3, bt18: 314, bt19: 545, bt20:184, bt21: -16, bt22: 204, tot_int_add: 801, alarms: 0, calc_supply: 305, bt1_avg: 3, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'05:44:08', version: 5121, bt1: -17, bt2: 293, bt3: 256, bt6: 558, bt7: 571, bt16: 1, bt18: 336, bt19: 548, bt20:184, bt21: -4, bt22: 200, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 3, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'05:49:09', version: 5121, bt1: -16, bt2: 286, bt3: 250, bt6: 540, bt7: 571, bt16: -1, bt18: 344, bt19: 520, bt20:184, bt21: -13, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'05:54:09', version: 5121, bt1: -15, bt2: 295, bt3: 254, bt6: 530, bt7: 571, bt16: -2, bt18: 312, bt19: 476, bt20:184, bt21: -17, bt22: 193, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'05:59:09', version: 5121, bt1: -17, bt2: 286, bt3: 249, bt6: 525, bt7: 571, bt16: -3, bt18: 282, bt19: 416, bt20:184, bt21: -18, bt22: 187, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:04:10', version: 5121, bt1: -17, bt2: 286, bt3: 252, bt6: 523, bt7: 570, bt16: -2, bt18: 282, bt19: 336, bt20:184, bt21: -20, bt22: 185, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:09:10', version: 5121, bt1: -17, bt2: 288, bt3: 248, bt6: 522, bt7: 570, bt16: -5, bt18: 283, bt19: 312, bt20:184, bt21: -23, bt22: 186, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:14:11', version: 5121, bt1: -18, bt2: 282, bt3: 251, bt6: 519, bt7: 570, bt16: -6, bt18: 282, bt19: 296, bt20:184, bt21: -25, bt22: 184, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:19:11', version: 5121, bt1: -19, bt2: 280, bt3: 247, bt6: 515, bt7: 570, bt16: -8, bt18: 281, bt19: 292, bt20:183, bt21: -27, bt22: 182, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:24:11', version: 5121, bt1: -19, bt2: 277, bt3: 250, bt6: 509, bt7: 570, bt16: -10, bt18: 279, bt19: 288, bt20:183, bt21: -31, bt22: 180, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:29:12', version: 5121, bt1: -19, bt2: 277, bt3: 247, bt6: 506, bt7: 570, bt16: -12, bt18: 280, bt19: 287, bt20:182, bt21: -34, bt22: 178, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:34:12', version: 5121, bt1: -19, bt2: 287, bt3: 249, bt6: 501, bt7: 570, bt16: -14, bt18: 280, bt19: 301, bt20:182, bt21: -38, bt22: 181, tot_int_add: 467, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:39:13', version: 5121, bt1: -21, bt2: 283, bt3: 249, bt6: 500, bt7: 568, bt16: -17, bt18: 282, bt19: 308, bt20:182, bt21: -44, bt22: 188, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 2, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:44:13', version: 5121, bt1: -21, bt2: 276, bt3: 250, bt6: 495, bt7: 568, bt16: -21, bt18: 278, bt19: 287, bt20:182, bt21: -50, bt22: 177, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'06:49:13', version: 5121, bt1: -21, bt2: 289, bt3: 249, bt6: 489, bt7: 568, bt16: -26, bt18: 281, bt19: 304, bt20:181, bt21: -57, bt22: 183, tot_int_add: 467, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 11, prio: 20},
+        {date: '2016-11-01', time:'06:54:14', version: 5121, bt1: -21, bt2: 324, bt3: 253, bt6: 489, bt7: 568, bt16: -32, bt18: 285, bt19: 354, bt20:180, bt21: -65, bt22: 205, tot_int_add: 559, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'06:59:14', version: 5121, bt1: -21, bt2: 352, bt3: 257, bt6: 489, bt7: 568, bt16: -39, bt18: 289, bt19: 393, bt20:177, bt21: -74, bt22: 226, tot_int_add: 801, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 7, prio: 20},
+        {date: '2016-11-01', time:'07:04:14', version: 5121, bt1: -21, bt2: 330, bt3: 258, bt6: 490, bt7: 568, bt16: -46, bt18: 284, bt19: 432, bt20:177, bt21: -83, bt22: 219, tot_int_add: 801, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'07:09:15', version: 5121, bt1: -21, bt2: 315, bt3: 258, bt6: 505, bt7: 568, bt16: -54, bt18: 309, bt19: 498, bt20:176, bt21: -94, bt22: 210, tot_int_add: 801, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 3, prio: 20},
+        {date: '2016-11-01', time:'07:14:15', version: 5121, bt1: -21, bt2: 316, bt3: 256, bt6: 553, bt7: 567, bt16: -66, bt18: 328, bt19: 558, bt20:174, bt21: -108, bt22: 204, tot_int_add: 467, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'07:19:16', version: 5121, bt1: -21, bt2: 287, bt3: 255, bt6: 553, bt7: 567, bt16: -81, bt18: 335, bt19: 540, bt20:172, bt21: -126, bt22: 202, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 1, relays: 3, prio: 50},
+        {date: '2016-11-01', time:'07:24:16', version: 5121, bt1: -21, bt2: 287, bt3: 249, bt6: 536, bt7: 567, bt16: 16, bt18: 296, bt19: 506, bt20:176, bt21: 2, bt22: 198, tot_int_add: 0, alarms: 183, calc_supply: 305, bt1_avg: 1, relays: 2, prio: 30},
+        {date: '2016-11-01', time:'07:29:16', version: 5121, bt1: -21, bt2: 266, bt3: 250, bt6: 527, bt7: 567, bt16: 114, bt18: 258, bt19: 417, bt20:178, bt21: 109, bt22: 190, tot_int_add: 0, alarms: 183, calc_supply: 305, bt1_avg: 1, relays: 2, prio: 30},
+        {date: '2016-11-01', time:'07:34:17', version: 5121, bt1: -21, bt2: 266, bt3: 246, bt6: 523, bt7: 567, bt16: 131, bt18: 258, bt19: 311, bt20:182, bt21: 108, bt22: 190, tot_int_add: 0, alarms: 183, calc_supply: 305, bt1_avg: 0, relays: 2, prio: 30},
+        {date: '2016-11-01', time:'07:39:17', version: 5121, bt1: -21, bt2: 273, bt3: 248, bt6: 518, bt7: 567, bt16: 2, bt18: 272, bt19: 286, bt20:182, bt21: -3, bt22: 194, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 0, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'07:44:18', version: 5121, bt1: -21, bt2: 299, bt3: 246, bt6: 510, bt7: 567, bt16: -3, bt18: 277, bt19: 318, bt20:183, bt21: -17, bt22: 204, tot_int_add: 200, alarms: 0, calc_supply: 305, bt1_avg: 0, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'07:49:18', version: 5121, bt1: -21, bt2: 278, bt3: 250, bt6: 507, bt7: 567, bt16: -10, bt18: 280, bt19: 294, bt20:183, bt21: -19, bt22: 200, tot_int_add: 0, alarms: 0, calc_supply: 305, bt1_avg: 0, relays: 3, prio: 30},
+        {date: '2016-11-01', time:'07:54:18', version: 5121, bt1: -21, bt2: 274, bt3: 246, bt6: 502, bt7: 566, bt16: -10, bt18: 277, bt19: 285, bt20:183, bt21: -23, bt22: 196, tot_int_add: 200, alarms: 0, calc_supply: 305, bt1_avg: 0, relays: 7, prio: 30},
+        {date: '2016-11-01', time:'07:59:19', version: 5121, bt1: -21, bt2: 304, bt3: 251, bt6: 498, bt7: 566, bt16: -12, bt18: 281, bt19: 322, bt20:183, bt21: -25, bt22: 210, tot_int_add: 200, alarms: 0, calc_supply: 305, bt1_avg: 0, relays: 3, prio: 30}
     ]
 };
 },{}],242:[function(require,module,exports){
@@ -54195,7 +54342,7 @@ var Home = React.createClass({displayName: "Home",
             data: HouseApi.getHouseData(),
             descriptors: HouseApi.getDescriptors(),
             divisors: HouseApi.getDivisors(),
-            ids: ["bt1", "bt20", "bt21", "bt22", "bt1_avg"]
+            ids: ["bt1", "bt20", "bt21", "bt22"]
         };
     },
     onChange: function(e) {
@@ -54295,9 +54442,9 @@ var House = React.createClass({displayName: "House",
             React.createElement("div", {style: {height: "600px"}}, 
 				React.createElement("vaadin-line-chart", null, 
                     React.createElement("exporting", {enabled: "false"}), 
-                    React.createElement("chart-title", null, "30 - 31.10.2016"), 
+                    React.createElement("chart-title", null, "31.10.2016 - 1.11.2016"), 
 				  React.createElement("x-axis", {type: "datetime"}, React.createElement("title", null, "Time")), 
-				  React.createElement("y-axis", null, React.createElement("title", null, "Temperature (°C)"), React.createElement("min", null, "-5"), React.createElement("max", null, "20")), 
+				  React.createElement("y-axis", null, React.createElement("title", null, "Temperature (°C)")), 
 						this.props.ids.map(this.getDataSeries), 
 				  React.createElement("plot-options", null, 
 					React.createElement("line", null, 
